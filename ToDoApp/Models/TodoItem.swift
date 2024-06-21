@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Priority {
+enum Priority: String {
     case low
     case neutral
     case high
@@ -47,12 +47,12 @@ extension TodoItem {
         }
         
         let id = jsonObject["id"] as? String
-        var text = jsonObject["text"] as? String
-        var priority = jsonObject["priority"] as? Priority ?? .neutral
-        var deadline = jsonObject["deadline"] as? Date
-        var completed = jsonObject["completed"] as? Bool
-        var created = jsonObject["created"] as? Date
-        var changed = jsonObject["changed"] as? Date
+        let text = jsonObject["text"] as? String
+        let priority = jsonObject["priority"] as? Priority ?? .neutral
+        let deadline = Date.fromString(string: jsonObject["deadline"] as? String)
+        let completed = jsonObject["completed"] as? Bool
+        let created = Date.fromString(string: jsonObject["created"] as? String)
+        let changed = Date.fromString(string: jsonObject["changed"] as? String)
         
         guard let id, let text, let completed, let created else {
             return nil
@@ -67,21 +67,32 @@ extension TodoItem {
         properties["id"] = id
         properties["text"] = text
         properties["completed"] = completed
-        properties["created"] = created
+        properties["created"] = created.string()
         
         if priority != .neutral {
-            properties["priority"] = priority
+            properties["priority"] = priority.rawValue
         }
         
         if let deadline {
-            properties["deadline"] = deadline
+            properties["deadline"] = deadline.string()
         }
         
         if let changed {
-            properties["changed"] = changed
+            properties["changed"] = changed.string()
         }
         
         return (try? JSONSerialization.data(withJSONObject: properties)) ?? Data()
         
     }
 }
+
+extension Date {
+    func string() -> String {
+        return ISO8601DateFormatter().string(from: self)
+    }
+    
+    static func fromString(string: String?) -> Date? {
+        guard let string else {return nil}
+        return ISO8601DateFormatter().date(from: string)
+    }
+ }
