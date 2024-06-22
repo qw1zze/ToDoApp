@@ -13,7 +13,7 @@ enum Priority: String {
     case high
 }
 
-struct TodoItem {
+struct TodoItem: Hashable {
     var id: String
     var text: String
     var priority: Priority
@@ -31,9 +31,39 @@ struct TodoItem {
         self.created = created
         self.changed = changed
     }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 extension TodoItem {
+    init?(dict: [String: Any]) {
+        let id = dict["id"] as? String
+        let text = dict["text"] as? String
+        let priority = dict["priority"] as? Priority ?? .neutral
+        let deadline = Date.fromString(string: dict["deadline"] as? String)
+        let completed = dict["completed"] as? Bool
+        let created = Date.fromString(string: dict["created"] as? String)
+        let changed = Date.fromString(string: dict["changed"] as? String)
+        
+        guard let id, let text, let completed, let created else {
+            return nil
+        }
+        
+        self.id = id
+        self.text = text
+        self.priority = priority
+        self.deadline = deadline
+        self.completed = completed
+        self.created = created
+        self.changed = changed
+    }
+    
     private static func convertToData(json: Any) -> Data? {
         guard let json = json as? String else {
             return json as? Data
@@ -81,7 +111,7 @@ extension TodoItem {
             properties["changed"] = changed.string()
         }
         
-        return (try? JSONSerialization.data(withJSONObject: properties)) ?? Data()
+        return properties
         
     }
 }
