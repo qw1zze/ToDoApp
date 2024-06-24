@@ -13,16 +13,16 @@ enum Priority: String {
     case high
 }
 
-struct TodoItem: Hashable {
-    var id: String
-    var text: String
-    var priority: Priority
-    var deadline: Date?
-    var completed: Bool
-    var created: Date
-    var changed: Date?
+struct TodoItem {
+    let id: String
+    let text: String
+    let priority: Priority
+    let deadline: Date?
+    let completed: Bool
+    let created: Date
+    let changed: Date?
     
-    init(id: String = UUID().uuidString, text: String, priority: Priority, deadline: Date?, completed: Bool, created: Date, changed: Date?) {
+    init(id: String = UUID().uuidString, text: String, priority: Priority, deadline: Date? = nil, completed: Bool = false, created: Date, changed: Date? = nil) {
         self.id = id
         self.text = text
         self.priority = priority

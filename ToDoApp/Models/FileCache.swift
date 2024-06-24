@@ -7,24 +7,33 @@
 
 import Foundation
 
+enum JSONError: Error {
+    case notValidTodoItem
+    case error(String)
+}
+
 class FileCache {
-    private(set) var todoItems = Set<TodoItem>()
+    private(set) var todoItems = [TodoItem]()
     
     private func convertToData() -> Data? {
-        var data = [Any]()
-        for todo in todoItems {
-            data.append(todo.json)
-        }
+        let data = Array(todoItems).map { $0.json }
         return try? JSONSerialization.data(withJSONObject: data)
     }
     
-    func addTodo(todo: TodoItem) {
-        todoItems.insert(todo)
+    func addTodo(_ todo: TodoItem) {
+        if let existedIndex = todoItems.firstIndex(where: { $0.id == todo.id}) {
+            todoItems[existedIndex] = todo
+        }
+        todoItems.append(todo)
     }
     
-    func removeTodo(id: String) {
-        let todo = TodoItem(id: id, text: "", priority: .neutral, deadline: nil, completed: false, created: Date(), changed: nil)
-        todoItems.remove(todo)
+    func removeTodo(id: String) -> TodoItem? {
+        guard let existedIndex = todoItems.firstIndex(where: { $0.id == id}) else {
+            return nil
+        }
+        let deletedTodo = todoItems[existedIndex]
+        todoItems.remove(at: existedIndex)
+        return deletedTodo
     }
     
     func saveToFile(file: URL) throws {
@@ -33,16 +42,15 @@ class FileCache {
     }
     
     func readFromFile(file: URL) throws {
-        guard let jsonData = try? Data(contentsOf: file), let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]] else {
-            return
-        }
-
-        todoItems = Set<TodoItem>()
+        let jsonData = try Data(contentsOf: file)
+        let jsonObject = try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]] ?? []
+        
+        todoItems = [TodoItem]()
         for item in jsonObject {
             guard let item = TodoItem(dict: item) else {
-                throw NSError(domain: "LoadingError", code: 0)
+                throw JSONError.notValidTodoItem
             }
-            todoItems.insert(item)
+            todoItems.append(item)
         }
     }
 }
