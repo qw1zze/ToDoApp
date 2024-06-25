@@ -8,6 +8,29 @@
 import Foundation
 
 extension TodoItem {
+    init?(dict: [String: Any]) {
+            let id = dict[TodoCodingKeys.id.rawValue] as? String
+            let text = dict[TodoCodingKeys.text.rawValue] as? String
+        let priority = Priority(rawValue: dict[TodoCodingKeys.priority.rawValue] as? String ?? Priority.neutral.rawValue) ?? .neutral
+            let deadline = Date.fromString(string: dict[TodoCodingKeys.deadline.rawValue] as? String)
+            let completed = dict[TodoCodingKeys.completed.rawValue] as? Bool
+            let created = Date.fromString(string: dict[TodoCodingKeys.created.rawValue] as? String)
+            let changed = Date.fromString(string: dict[TodoCodingKeys.changed.rawValue] as? String)
+            
+            guard let id, let text, let completed, let created else {
+                return nil
+            }
+            
+            self.id = id
+            self.text = text
+            self.priority = priority
+            self.deadline = deadline
+            self.completed = completed
+            self.created = created
+            self.changed = changed
+        }
+
+    
     private static func convertToData(json: Any) -> Data? {
         guard let json = json as? String else {
             return json as? Data
@@ -20,19 +43,7 @@ extension TodoItem {
             return nil
         }
         
-        let id = jsonObject[TodoCodingKeys.id.rawValue] as? String
-        let text = jsonObject[TodoCodingKeys.text.rawValue] as? String
-        let priority = jsonObject[TodoCodingKeys.priority.rawValue] as? Priority ?? .neutral
-        let deadline = Date.fromString(string: jsonObject[TodoCodingKeys.deadline.rawValue] as? String)
-        let completed = jsonObject[TodoCodingKeys.completed.rawValue] as? Bool
-        let created = Date.fromString(string: jsonObject[TodoCodingKeys.created.rawValue] as? String)
-        let changed = Date.fromString(string: jsonObject[TodoCodingKeys.changed.rawValue] as? String)
-        
-        guard let id, let text, let completed, let created else {
-            return nil
-        }
-        
-        return TodoItem(id: id, text: text, priority: priority, deadline: deadline, completed: completed, created: created, changed: changed)
+        return TodoItem(dict: jsonObject)
     }
     
     var json: Any {

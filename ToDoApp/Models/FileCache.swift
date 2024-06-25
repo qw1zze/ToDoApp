@@ -16,7 +16,7 @@ class FileCache {
     private(set) var todoItems = [TodoItem]()
     
     private func convertToData() throws -> Data {
-        let data = Array(todoItems).map { $0.json }
+        let data = todoItems.map { $0.json }
         return try JSONSerialization.data(withJSONObject: data)
     }
     
@@ -51,8 +51,7 @@ class FileCache {
         
         let fileUrl = try FileManager.getUrl(fileName: fileName)
         let jsonData = try Data(contentsOf: fileUrl)
-        let jsonObject = try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]] ?? []
-        
-        todoItems = jsonObject.compactMap { TodoItem.parse(json: $0) }
+        let jsonObject = (try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]]) ?? []
+        todoItems = jsonObject.compactMap { TodoItem(dict: $0) }
     }
 }
