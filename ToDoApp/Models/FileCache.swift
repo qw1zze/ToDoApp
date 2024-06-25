@@ -23,6 +23,7 @@ class FileCache {
     func addTodo(_ todo: TodoItem) {
         if let existedIndex = todoItems.firstIndex(where: { $0.id == todo.id}) {
             todoItems[existedIndex] = todo
+            return
         }
         todoItems.append(todo)
     }
