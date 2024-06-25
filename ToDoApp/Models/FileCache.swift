@@ -15,9 +15,9 @@ enum JSONError: Error {
 class FileCache {
     private(set) var todoItems = [TodoItem]()
     
-    private func convertToData() -> Data? {
+    private func convertToData() throws -> Data {
         let data = Array(todoItems).map { $0.json }
-        return try? JSONSerialization.data(withJSONObject: data)
+        return try JSONSerialization.data(withJSONObject: data)
     }
     
     func addTodo(_ todo: TodoItem) {
@@ -36,21 +36,23 @@ class FileCache {
         return deletedTodo
     }
     
-    func saveToFile(file: URL) throws {
-        let data = convertToData() ?? Data()
-        try data.write(to: file)
+    func saveToFile(fileName: String) throws {
+        guard let fileUrl = try? FileManager.getUrl(fileName: fileName) else {
+            throw FileManagerError.fileNotFound
+        }
+        let data = try convertToData()
+        try data.write(to: fileUrl)
     }
     
-    func readFromFile(file: URL) throws {
-        let jsonData = try Data(contentsOf: file)
+    func readFromFile(fileName: String) throws {
+        if !FileManager.isExists(fileName: fileName) {
+            throw FileManagerError.fileIsExist
+        }
+        
+        let fileUrl = try FileManager.getUrl(fileName: fileName)
+        let jsonData = try Data(contentsOf: fileUrl)
         let jsonObject = try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]] ?? []
         
-        todoItems = [TodoItem]()
-        for item in jsonObject {
-            guard let item = TodoItem(dict: item) else {
-                throw JSONError.notValidTodoItem
-            }
-            todoItems.append(item)
-        }
+        todoItems = jsonObject.compactMap { TodoItem.parse(json: $0) }
     }
 }

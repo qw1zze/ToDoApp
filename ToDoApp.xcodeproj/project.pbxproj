@@ -19,6 +19,7 @@
 		8EECD0D22C2A354200064D64 /* TodoItem+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EECD0D12C2A354200064D64 /* TodoItem+JSON.swift */; };
 		8EECD0D42C2A358F00064D64 /* TodoItem+CSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EECD0D32C2A358F00064D64 /* TodoItem+CSV.swift */; };
 		8EECD0D72C2A38F800064D64 /* Date+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EECD0D62C2A38F800064D64 /* Date+extensions.swift */; };
+		8EECD0D92C2A3D2F00064D64 /* FileManager+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EECD0D82C2A3D2F00064D64 /* FileManager+extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		8EECD0D12C2A354200064D64 /* TodoItem+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TodoItem+JSON.swift"; sourceTree = "<group>"; };
 		8EECD0D32C2A358F00064D64 /* TodoItem+CSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TodoItem+CSV.swift"; sourceTree = "<group>"; };
 		8EECD0D62C2A38F800064D64 /* Date+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+extensions.swift"; sourceTree = "<group>"; };
+		8EECD0D82C2A3D2F00064D64 /* FileManager+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				8EECD0D62C2A38F800064D64 /* Date+extensions.swift */,
+				8EECD0D82C2A3D2F00064D64 /* FileManager+extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 				8EECD0D22C2A354200064D64 /* TodoItem+JSON.swift in Sources */,
 				8E178DFF2C264926009C8210 /* FileCache.swift in Sources */,
 				8EECD0D72C2A38F800064D64 /* Date+extensions.swift in Sources */,
+				8EECD0D92C2A3D2F00064D64 /* FileManager+extensions.swift in Sources */,
 				8E178DD12C262F57009C8210 /* ToDoAppApp.swift in Sources */,
 				8EECD0D42C2A358F00064D64 /* TodoItem+CSV.swift in Sources */,
 			);

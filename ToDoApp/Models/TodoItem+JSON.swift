@@ -8,28 +8,6 @@
 import Foundation
 
 extension TodoItem {
-    init?(dict: [String: Any]) {
-        let id = dict[TodoCodingKeys.id.rawValue] as? String
-        let text = dict[TodoCodingKeys.text.rawValue] as? String
-        let priority = dict[TodoCodingKeys.priority.rawValue] as? Priority ?? .neutral
-        let deadline = Date.fromString(string: dict[TodoCodingKeys.deadline.rawValue] as? String)
-        let completed = dict[TodoCodingKeys.completed.rawValue] as? Bool
-        let created = Date.fromString(string: dict[TodoCodingKeys.created.rawValue] as? String)
-        let changed = Date.fromString(string: dict[TodoCodingKeys.changed.rawValue] as? String)
-        
-        guard let id, let text, let completed, let created else {
-            return nil
-        }
-        
-        self.id = id
-        self.text = text
-        self.priority = priority
-        self.deadline = deadline
-        self.completed = completed
-        self.created = created
-        self.changed = changed
-    }
-    
     private static func convertToData(json: Any) -> Data? {
         guard let json = json as? String else {
             return json as? Data
@@ -76,8 +54,6 @@ extension TodoItem {
         if let changed {
             properties[TodoCodingKeys.changed.rawValue] = changed.string()
         }
-        
         return properties
-        
     }
 }
