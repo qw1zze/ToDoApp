@@ -7,42 +7,52 @@
 
 import Foundation
 
+enum JSONError: Error {
+    case notValidTodoItem
+    case error(String)
+}
+
 class FileCache {
-    private(set) var todoItems = Set<TodoItem>()
+    private(set) var todoItems = [TodoItem]()
     
-    private func convertToData() -> Data? {
-        var data = [Any]()
-        for todo in todoItems {
-            data.append(todo.json)
-        }
-        return try? JSONSerialization.data(withJSONObject: data)
+    private func convertToData() throws -> Data {
+        let data = todoItems.map { $0.json }
+        return try JSONSerialization.data(withJSONObject: data)
     }
     
-    func addTodo(todo: TodoItem) {
-        todoItems.insert(todo)
-    }
-    
-    func removeTodo(id: String) {
-        let todo = TodoItem(id: id, text: "", priority: .neutral, deadline: nil, completed: false, created: Date(), changed: nil)
-        todoItems.remove(todo)
-    }
-    
-    func saveToFile(file: URL) throws {
-        let data = convertToData() ?? Data()
-        try data.write(to: file)
-    }
-    
-    func readFromFile(file: URL) throws {
-        guard let jsonData = try? Data(contentsOf: file), let jsonObject = try? JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]] else {
+    func addTodo(_ todo: TodoItem) {
+        if let existedIndex = todoItems.firstIndex(where: { $0.id == todo.id}) {
+            todoItems[existedIndex] = todo
             return
         }
-
-        todoItems = Set<TodoItem>()
-        for item in jsonObject {
-            guard let item = TodoItem(dict: item) else {
-                throw NSError(domain: "LoadingError", code: 0)
-            }
-            todoItems.insert(item)
+        todoItems.append(todo)
+    }
+    
+    func removeTodo(id: String) -> TodoItem? {
+        guard let existedIndex = todoItems.firstIndex(where: { $0.id == id}) else {
+            return nil
         }
+        let deletedTodo = todoItems[existedIndex]
+        todoItems.remove(at: existedIndex)
+        return deletedTodo
+    }
+    
+    func saveToFile(fileName: String) throws {
+        guard let fileUrl = try? FileManager.getUrl(fileName: fileName) else {
+            throw FileManagerError.fileNotFound
+        }
+        let data = try convertToData()
+        try data.write(to: fileUrl)
+    }
+    
+    func readFromFile(fileName: String) throws {
+        if !FileManager.isExists(fileName: fileName) {
+            throw FileManagerError.fileIsExist
+        }
+        
+        let fileUrl = try FileManager.getUrl(fileName: fileName)
+        let jsonData = try Data(contentsOf: fileUrl)
+        let jsonObject = (try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]]) ?? []
+        todoItems = jsonObject.compactMap { TodoItem(dict: $0) }
     }
 }
