@@ -12,7 +12,7 @@ enum JSONError: Error {
     case error(String)
 }
 
-class FileCache {
+class FileCache: ObservableObject {
     private(set) var todoItems = [TodoItem]()
     
     private func convertToData() throws -> Data {

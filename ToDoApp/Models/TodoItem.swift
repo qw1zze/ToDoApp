@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TodoItem {
+struct TodoItem: Identifiable {
     let id: String
     let text: String
     let priority: Priority
