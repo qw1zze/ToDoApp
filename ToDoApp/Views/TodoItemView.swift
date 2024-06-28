@@ -10,21 +10,23 @@ import SwiftUI
 struct TodoItemView: View {
     @ObservedObject var viewModel: TodoItemViewModel
     @Binding var isShown: Bool
+    @FocusState var onText: Bool
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    TodoItemTextField(taskText: $viewModel.taskText)
+                    todoTextField
+                      
+                    todoItemDetails
                     
-                    TodoItemDetails(prioity: $viewModel.prioity, hasDeadline: $viewModel.hasDeadline, deadline: $viewModel.deadline)
-                    
-                    todoItemDeleteButton(viewModel: viewModel, isShown: $isShown)
+                    deleteButton
                 }
                 .padding(16)
             }
-            .background(.thickMaterial)
-            .animation(.easeOut, value: viewModel.hasDeadline)
+            .animation(.easeInOut, value: viewModel.IsShowDatePicker)
+            .animation(.easeInOut, value: viewModel.hasDeadline)
+            .background(Resources.Colors.Back.primary)
             .navigationTitle("Дело")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
@@ -38,124 +40,113 @@ struct TodoItemView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        viewModel.saveTodoItem()
-                        isShown = false
-                    } label: {
-                        Text("Сохранить")
+                    if onText {
+                        Button {
+                            onText = false
+                        } label: {
+                            Text("Закрыть")
+                        }
+                    } else {
+                        Button {
+                            viewModel.saveTodoItem()
+                            isShown = false
+                        } label: {
+                            Text("Сохранить")
+                        }
                     }
                 }
             })
         }
     }
-}
-
-#Preview {
-    @State var hasDeadliine = true
-    var viewModel = TodoItemViewModel(todoItem: TodoItem(text: "Example text", priority: .high, deadline: Date.now.addingTimeInterval(86400 * 4), created: Date()), fileCacheModel: FileCache())
-    return TodoItemView(viewModel: viewModel, isShown: $hasDeadliine)
-}
-
-struct TodoItemTextField: View {
-    @Binding var taskText: String
     
-    var body: some View {
-        TextEditor(text: $taskText)
+    private var todoTextField: some View {
+        TextEditor(text: $viewModel.taskText)
             .frame(minHeight: 120)
             .padding(.vertical, 16)
             .padding(.horizontal, 12)
-            .background(.windowBackground)
+            .scrollContentBackground(.hidden)
+            .foregroundStyle(Resources.Colors.Label.primary)
+            .background(Resources.Colors.Back.secondary)
             .clipShape(RoundedRectangle(cornerRadius: 16))
+            .focused($onText)
     }
-}
-
-struct TodoItemDetails: View {
-    @Binding var prioity: Priority
-    @Binding var hasDeadline: Bool
-    @Binding var deadline: Date
     
-    var body: some View {
+    private var todoItemDetails: some View {
         VStack(spacing: 16) {
-            PriorityPicker(priority: $prioity)
+            priorityPickerRow
             
             Divider()
             
-            todoItemDeadline(hasDeadline: $hasDeadline, deadline: $deadline)
+            deadlinePickerRow
             
-            if hasDeadline {
+            if viewModel.hasDatePicker {
                 Divider()
                 
-                DatePicker("", selection: $deadline, in: Date.now..., displayedComponents: [.date])
+                DatePicker("", selection: $viewModel.deadline, in: Date.now..., displayedComponents: [.date])
                     .datePickerStyle(.graphical)
+                    .onChange(of: viewModel.deadline) {
+                        viewModel.hideDatePicker()
+                    }
             }
+            
         }
         .padding(.vertical, 16)
         .padding(.horizontal, 12)
-        .background(.white)
+        .foregroundStyle(Resources.Colors.Label.primary)
+        .background(Resources.Colors.Back.secondary)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
-}
-
-struct PriorityPicker: View {
-    @Binding var priority: Priority
     
-    var body: some View {
+    private var priorityPickerRow: some View {
         HStack {
             Text("Важность")
             
             Spacer()
             
-            Picker("Priority", selection: $priority) {
-                Image(systemName: "arrow.down")
-                    .tag(Priority.low)
-                
-                Text("нет")
-                    .tag(Priority.neutral)
-                
-                Image(systemName: "exclamationmark.2")
-                    .tag(Priority.high)
-            }
-            .pickerStyle(.segmented)
-            .labelsHidden()
-            .frame(width: 150)
+            PriorityPicker(priority: $viewModel.priority)
         }
     }
-}
-
-struct todoItemDeadline: View {
-    @Binding var hasDeadline: Bool
-    @Binding var deadline: Date
     
-    var body: some View {
-        Toggle(isOn: $hasDeadline) {
+    private var deadlinePickerRow: some View {
+        Toggle(isOn: $viewModel.hasDeadline) {
             VStack(alignment: .leading) {
                 Text("Сделать до")
+                    .foregroundStyle(Resources.Colors.Label.primary)
                 
-                if hasDeadline {
-                    Text(deadline.formatted(date: .abbreviated, time: .omitted))
+                if viewModel.hasDeadline {
+                    Text(viewModel.deadline.formatted(date: .abbreviated, time: .omitted))
                         .font(.caption)
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(Resources.Colors.blue)
+                        .animation(.bouncy, value: viewModel.deadline)
+                        .onTapGesture {
+                            viewModel.IsShowDatePicker.toggle()
+                        }
                 }
             }
         }
+        .onChange(of: viewModel.hasDeadline) {
+            viewModel.changeStateDatePicker()
+            viewModel.setDeadlineDefault()
+        }
     }
-}
-
-struct todoItemDeleteButton: View {
-    @ObservedObject var viewModel: TodoItemViewModel
-    @Binding var isShown: Bool
     
-    var body: some View {
+    private var deleteButton: some View {
         Button {
             viewModel.deleteTodoItem()
             isShown = false
         } label: {
             Text("Удалить")
-                .foregroundStyle(.red)
+                .foregroundStyle(viewModel.todoItem?.id != nil ? Resources.Colors.red: Resources.Colors.Label.disable)
         }
         .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, minHeight: 20, idealHeight: 56, maxHeight: 56)
-        .background(.white)
+        .background(Resources.Colors.Back.secondary)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .disabled(viewModel.todoItem?.id == nil)
     }
+}
+
+#Preview {
+    @State var show = true
+    var viewModel = TodoItemViewModel(todoItem: TodoItem(text: "Example text", priority: .high, deadline: Date.now.addingTimeInterval(86400 * 4), created: Date()), fileCacheModel: FileCache())
+    return TodoItemView(viewModel: viewModel, isShown: $show)
 }
