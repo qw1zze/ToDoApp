@@ -15,24 +15,24 @@ final class TodoItemViewModel: ObservableObject {
     @Published var deadline: Date
     @Published var IsShowDatePicker: Bool
     
+    @Published var update: (TodoItem?) -> Void
+    
     var hasDatePicker: Bool {
         return hasDeadline && IsShowDatePicker
     }
     
-    @ObservedObject private var fileCacheModel: FileCache
-    
-    init(todoItem: TodoItem?, fileCacheModel: FileCache) {
+    init(todoItem: TodoItem?, update: @escaping (TodoItem?) -> Void) {
         self.todoItem = todoItem
         self.taskText = todoItem?.text ?? ""
         self.priority = todoItem?.priority ?? .neutral
         self.hasDeadline = todoItem?.deadline != nil
         self.deadline = todoItem?.deadline ?? Date()
-        self.fileCacheModel = fileCacheModel
         self.IsShowDatePicker = false
+        self.update = update
     }
     
-    func saveTodoItem() {
-        let todoItem = TodoItem(id: todoItem?.id ?? UUID().uuidString,
+    func saveTodoItem() -> TodoItem {
+        return TodoItem(id: todoItem?.id ?? UUID().uuidString,
                                 text: taskText,
                                 priority: priority,
                                 deadline: hasDeadline ? deadline : nil,
@@ -40,11 +40,10 @@ final class TodoItemViewModel: ObservableObject {
                                 created: todoItem?.created ?? Date(),
                                 changed: Date()
         )
-        fileCacheModel.addTodo(todoItem)
     }
     
-    func deleteTodoItem() {
-        fileCacheModel.removeTodo(id: todoItem?.id ?? "")
+    func deleteTodoItem() -> TodoItem? {
+        return nil
     }
     
     func hideDatePicker() {

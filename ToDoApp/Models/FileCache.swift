@@ -12,7 +12,7 @@ enum JSONError: Error {
     case error(String)
 }
 
-class FileCache: ObservableObject {
+final class FileCache {
     private(set) var todoItems = [TodoItem]()
     
     private func convertToData() throws -> Data {
@@ -35,6 +35,15 @@ class FileCache: ObservableObject {
         let deletedTodo = todoItems[existedIndex]
         todoItems.remove(at: existedIndex)
         return deletedTodo
+    }
+    
+    func updateTodo(_ todo: TodoItem) {
+        for i in 0..<todoItems.count {
+            if todoItems[i].id == todo.id {
+                todoItems[i] = todo
+                return
+            }
+        }
     }
     
     func saveToFile(fileName: String) throws {

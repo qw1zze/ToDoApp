@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TodoItemView: View {
-    @StateObject var viewModel: TodoItemViewModel
+    @ObservedObject var viewModel: TodoItemViewModel
     @Binding var isShown: Bool
     @FocusState var onText: Bool
     
@@ -23,9 +23,8 @@ struct TodoItemView: View {
                     deleteButton
                 }
                 .padding(16)
-            }
-            .animation(.easeInOut, value: viewModel.IsShowDatePicker)
-            .animation(.easeInOut, value: viewModel.hasDeadline)
+            }  
+            .animation(.easeInOut, value: viewModel.hasDatePicker)
             .background(Resources.Colors.Back.primary)
             .navigationTitle("Дело")
             .navigationBarTitleDisplayMode(.inline)
@@ -48,7 +47,7 @@ struct TodoItemView: View {
                         }
                     } else {
                         Button {
-                            viewModel.saveTodoItem()
+                            viewModel.update(viewModel.saveTodoItem())
                             isShown = false
                         } label: {
                             Text("Сохранить")
@@ -77,17 +76,17 @@ struct TodoItemView: View {
             
             Divider()
             
-            deadlinePickerRow
-            
-            if viewModel.hasDatePicker {
-                Divider()
+                deadlinePickerRow
                 
-                DatePicker("", selection: $viewModel.deadline, in: Date.now..., displayedComponents: [.date])
-                    .datePickerStyle(.graphical)
-                    .onChange(of: viewModel.deadline) {
-                        viewModel.hideDatePicker()
-                    }
-            }
+                if viewModel.hasDatePicker {
+                    Divider()
+                    
+                    DatePicker("", selection: $viewModel.deadline, in: Date.now..., displayedComponents: [.date])
+                        .datePickerStyle(.graphical)
+                        .onChange(of: viewModel.deadline) {
+                            viewModel.hideDatePicker()
+                        }
+                }
             
         }
         .padding(.vertical, 16)
@@ -132,7 +131,7 @@ struct TodoItemView: View {
     
     private var deleteButton: some View {
         Button {
-            viewModel.deleteTodoItem()
+            viewModel.update(viewModel.deleteTodoItem())
             isShown = false
         } label: {
             Text("Удалить")
@@ -147,6 +146,6 @@ struct TodoItemView: View {
 
 #Preview {
     @State var show = true
-    var viewModel = TodoItemViewModel(todoItem: TodoItem(text: "Example text", priority: .high, deadline: Date.now.addingTimeInterval(86400 * 4), created: Date()), fileCacheModel: FileCache())
+    var viewModel = TodoItemViewModel(todoItem: TodoItem(text: "", priority: .neutral, created: Date()), update: {_ in })
     return TodoItemView(viewModel: viewModel, isShown: $show)
 }

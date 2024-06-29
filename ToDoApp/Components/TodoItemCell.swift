@@ -9,12 +9,13 @@ import SwiftUI
 
 struct TodoItemCell: View {
     var todoItem: TodoItem
+    @ObservedObject var viewModel: TodoListViewModel
     
     private var checkCircle: some View {
         Image(todoItem.completed ? "DoneTask": todoItem.priority == .high ? "ImportantTask" : "CheckTask")
             .frame(width: 24, height: 24)
             .onTapGesture {
-                //todoItem.completed = true
+                viewModel.toggleTask(todoItem)
             }
     }
     
@@ -54,10 +55,12 @@ struct TodoItemCell: View {
                     .foregroundStyle(Resources.Colors.Label.secondary)
                 }
             }
+            .animation(.easeInOut, value: todoItem.completed)
             
             Spacer()
             
             Image(systemName: "chevron.right")
+                .foregroundStyle(Resources.Colors.gray)
             
             Color(.blue) //TODO
                 .frame(width: 5)
@@ -65,8 +68,4 @@ struct TodoItemCell: View {
         }
         .padding([.top, .bottom], 8)
     }
-}
-
-#Preview {
-    TodoItemCell(todoItem: TodoItem(text: "Выпить матчу", priority: .high, deadline: Date().addingTimeInterval(86400 * 4), completed: false, created: Date())).frame(height: 50)
 }
