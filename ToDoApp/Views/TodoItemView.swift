@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TodoItemView: View {
-    @ObservedObject var viewModel: TodoItemViewModel
+    @StateObject var viewModel: TodoItemViewModel
     @Binding var isShown: Bool
     @FocusState var onText: Bool
     

@@ -19,7 +19,7 @@ final class TodoItemViewModel: ObservableObject {
         return hasDeadline && IsShowDatePicker
     }
     
-    private var fileCacheModel: FileCache
+    @ObservedObject private var fileCacheModel: FileCache
     
     init(todoItem: TodoItem?, fileCacheModel: FileCache) {
         self.todoItem = todoItem

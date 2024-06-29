@@ -27,3 +27,7 @@ struct PriorityPicker: View {
         .labelsHidden()
     }
 }
+#Preview(body: {
+    @State var priority: Priority = .high
+    return PriorityPicker(priority: $priority)
+})
