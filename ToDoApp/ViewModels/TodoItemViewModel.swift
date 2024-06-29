@@ -23,7 +23,7 @@ final class TodoItemViewModel: ObservableObject {
     
     init(todoItem: TodoItem?, update: @escaping (TodoItem?) -> Void) {
         self.todoItem = todoItem
-        self.taskText = todoItem?.text ?? ""
+        self.taskText = todoItem?.text ?? "Что надо сделать?"
         self.priority = todoItem?.priority ?? .neutral
         self.hasDeadline = todoItem?.deadline != nil
         self.deadline = todoItem?.deadline ?? Date()

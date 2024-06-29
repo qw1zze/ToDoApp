@@ -68,6 +68,11 @@ struct TodoItemView: View {
             .background(Resources.Colors.Back.secondary)
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .focused($onText)
+            .onTapGesture {
+                if viewModel.taskText == "Что надо сделать?" {
+                    viewModel.taskText = ""
+                }
+            }
     }
     
     private var todoItemDetails: some View {
