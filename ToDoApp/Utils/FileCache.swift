@@ -1,10 +1,3 @@
-//
-//  FileCache.swift
-//  ToDoApp
-//
-//  Created by Dmitriy Kalyakin on 22.06.2024.
-//
-
 import Foundation
 
 enum JSONError: Error {
@@ -12,7 +5,16 @@ enum JSONError: Error {
     case error(String)
 }
 
-final class FileCache {
+protocol FileCache {
+    var todoItems: [TodoItem] { get }
+    func addTodo(_ todo: TodoItem)
+    func removeTodo(id: String) -> TodoItem?
+    func updateTodo(_ todo: TodoItem)
+    func saveToFile(fileName: String) throws
+    func readFromFile(fileName: String) throws
+}
+
+final class FileCacheLocal: FileCache {
     private(set) var todoItems = [TodoItem]()
     
     private func convertToData() throws -> Data {

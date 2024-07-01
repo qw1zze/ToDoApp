@@ -1,10 +1,3 @@
-//
-//  TodoItemViewModel.swift
-//  ToDoApp
-//
-//  Created by Dmitriy Kalyakin on 26.06.2024.
-//
-
 import SwiftUI
 
 final class TodoItemViewModel: ObservableObject {
@@ -15,24 +8,24 @@ final class TodoItemViewModel: ObservableObject {
     @Published var deadline: Date
     @Published var IsShowDatePicker: Bool
     
-    @Published var update: (TodoItem?) -> Void
+    private var fileCache: FileCache
+    
+    init(todoItem: TodoItem?, fileCache: FileCache) {
+        self.todoItem = todoItem
+        self.taskText = todoItem?.text ?? ""
+        self.priority = todoItem?.priority ?? .neutral
+        self.hasDeadline = todoItem?.deadline != nil
+        self.deadline = todoItem?.deadline ?? Date()
+        self.IsShowDatePicker = false
+        self.fileCache = fileCache
+    }
     
     var hasDatePicker: Bool {
         return hasDeadline && IsShowDatePicker
     }
     
-    init(todoItem: TodoItem?, update: @escaping (TodoItem?) -> Void) {
-        self.todoItem = todoItem
-        self.taskText = todoItem?.text ?? "Что надо сделать?"
-        self.priority = todoItem?.priority ?? .neutral
-        self.hasDeadline = todoItem?.deadline != nil
-        self.deadline = todoItem?.deadline ?? Date()
-        self.IsShowDatePicker = false
-        self.update = update
-    }
-    
-    func saveTodoItem() -> TodoItem {
-        return TodoItem(id: todoItem?.id ?? UUID().uuidString,
+    func saveTodoItem() {
+        let todoItem = TodoItem(id: todoItem?.id ?? UUID().uuidString,
                                 text: taskText,
                                 priority: priority,
                                 deadline: hasDeadline ? deadline : nil,
@@ -40,10 +33,14 @@ final class TodoItemViewModel: ObservableObject {
                                 created: todoItem?.created ?? Date(),
                                 changed: Date()
         )
+        fileCache.addTodo(todoItem)
     }
     
-    func deleteTodoItem() -> TodoItem? {
-        return nil
+    func deleteTodoItem() {
+        guard let id = todoItem?.id else {
+            return
+        }
+        let _ = fileCache.removeTodo(id: id)
     }
     
     func hideDatePicker() {
