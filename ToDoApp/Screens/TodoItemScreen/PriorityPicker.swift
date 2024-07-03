@@ -1,10 +1,3 @@
-//
-//  PriorityPicker.swift
-//  ToDoApp
-//
-//  Created by Dmitriy Kalyakin on 28.06.2024.
-//
-
 import SwiftUI
 
 struct PriorityPicker: View {

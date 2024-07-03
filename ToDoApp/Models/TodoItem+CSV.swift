@@ -33,7 +33,7 @@ extension TodoItem {
             return nil
         }
         
-        var id = properties[0]
+        let id = properties[0]
         let text = properties[1]
         let priority = properties[2]
         let deadline = properties[3]

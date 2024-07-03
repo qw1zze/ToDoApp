@@ -1,16 +1,10 @@
-//
-//  TodoListViewController.swift
-//  ToDoApp
-//
-//  Created by Dmitriy Kalyakin on 29.06.2024.
-//
-
 import SwiftUI
 
 final class TodoListViewModel: ObservableObject {
     @Published var fileCache: FileCache
     @Published var todoItems: [TodoItem]
     @Published var filterCompleted = true
+    @Published var isShownTodo: Bool = false
     
     init(fileCache: FileCache) {
         self.fileCache = fileCache
@@ -31,12 +25,24 @@ final class TodoListViewModel: ObservableObject {
         return todoItems.filter({$0.completed == true}).count
     }
     
+    func toggleFilter() {
+        filterCompleted.toggle()
+    }
+    
+    func showTodo() {
+        isShownTodo = true
+    }
+    
     func addTodo(_ todo: TodoItem?) {
         guard let todo = todo else {
             return
         }
         fileCache.addTodo(todo)
-        todoItems.append(todo)
+        todoItems = fileCache.todoItems
+    }
+    
+    func update() {
+        todoItems = fileCache.todoItems
     }
     
     func update(oldValue: TodoItem?, newValue: TodoItem?) {
@@ -45,13 +51,13 @@ final class TodoListViewModel: ObservableObject {
         }
         if let newValue = newValue {
             fileCache.updateTodo(newValue)
+            todoItems = fileCache.todoItems
         } else {
-            guard let existedIndex = todoItems.firstIndex(where: { $0.id == oldValue.id}) else {
+            guard let existedIndex = fileCache.todoItems.firstIndex(where: { $0.id == oldValue.id}) else {
                 return
             }
-            let deletedTodo = todoItems[existedIndex]
-            todoItems.remove(at: existedIndex)
-            fileCache.removeTodo(id: oldValue.id)
+            let _ = fileCache.removeTodo(id: fileCache.todoItems[existedIndex].id)
+            todoItems = fileCache.todoItems
         }
         
     }

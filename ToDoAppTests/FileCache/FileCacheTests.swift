@@ -16,7 +16,7 @@ struct FileCacheTestValues {
 final class FileCacheTests: XCTestCase {
 
     func testAddTodoNew() {
-        let fileCache = FileCache()
+        let fileCache = FileCacheLocal()
         fileCache.addTodo(FileCacheTestValues.todoFirst)
         
         XCTAssertFalse(fileCache.todoItems.isEmpty)
@@ -30,7 +30,7 @@ final class FileCacheTests: XCTestCase {
     }
     
     func testAddExists() {
-        let fileCache = FileCache()
+        let fileCache = FileCacheLocal()
         fileCache.addTodo(FileCacheTestValues.todoFirst)
         fileCache.addTodo(FileCacheTestValues.todoFirst)
         
@@ -45,7 +45,7 @@ final class FileCacheTests: XCTestCase {
     }
     
     func testRemoveTodoExist() {
-        let fileCache = FileCache()
+        let fileCache = FileCacheLocal()
         fileCache.addTodo(FileCacheTestValues.todoFirst)
         let removedTodo = fileCache.removeTodo(id: FileCacheTestValues.todoFirst.id)
         
@@ -61,7 +61,7 @@ final class FileCacheTests: XCTestCase {
     }
     
     func testRemoveTodoNotExist() {
-        let fileCache = FileCache()
+        let fileCache = FileCacheLocal()
         fileCache.addTodo(FileCacheTestValues.todoFirst)
         let removedTodo = fileCache.removeTodo(id: FileCacheTestValues.todoSecond.id)
         
@@ -70,12 +70,12 @@ final class FileCacheTests: XCTestCase {
     }
     
     func testSaveAndRead() {
-        let fileCache = FileCache()
+        let fileCache = FileCacheLocal()
         fileCache.addTodo(FileCacheTestValues.todoFirst)
         fileCache.addTodo(FileCacheTestValues.todoSecond)
         try! fileCache.saveToFile(fileName: "testFile")
         
-        let newFileCache = FileCache()
+        let newFileCache = FileCacheLocal()
         try! newFileCache.readFromFile(fileName: "testFile")
         
         XCTAssertTrue(newFileCache.todoItems.count == fileCache.todoItems.count)
