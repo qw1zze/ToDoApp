@@ -42,7 +42,7 @@ class DateCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            contentView.backgroundColor = isSelected ? .gray : .white
+            contentView.backgroundColor = isSelected ? .gray : UIColor(Resources.Colors.Back.primary)
             self.contentView.layer.borderWidth = isSelected ? 2 : 0
         }
     }

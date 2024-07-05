@@ -1,10 +1,23 @@
 import UIKit
+import SwiftUI
 
 class CalendarViewController: UIViewController {
     
     var collectionView: CalendarHorizontalView
     
     var tableView: CalendarTableView
+    
+    var button: UIButton = {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.4
+        button.layer.shadowOffset = .zero
+        button.layer.shadowRadius = 4
+        button.layer.cornerRadius = 24
+        button.backgroundColor = UIColor(Resources.Colors.blue)
+        return button
+    }()
     
     var source: [((String, String), [TodoItem])] = []
     var viewModel: CalendarViewModel
@@ -28,6 +41,36 @@ class CalendarViewController: UIViewController {
         collectionView.delegate = self
         tableView.tableView.delegate = self
     }
+    
+    func convertSource(_ items: [TodoItem]) -> [((String, String), [TodoItem])] {
+        var source = [((String, String), [TodoItem])]()
+        items.forEach { item in
+            guard let deadline = item.deadline else {
+                if let ind = source.firstIndex(where: { $0.0.0 == "Другое" }) {
+                    source[ind].1.append(item)
+                } else {
+                    source.append((("Другое", ""), [item]))
+                }
+                return
+            }
+            
+            if let ind = source.firstIndex(where: { $0.0.0 == deadline.getDayAndMonth().0 && $0.0.1 == deadline.getDayAndMonth().1 }) {
+                source[ind].1.append(item)
+            } else {
+                source.append(((deadline.getDayAndMonth().0, deadline.getDayAndMonth().1), [item]))
+            }
+        }
+        source.sort { first, second in
+            first.0.0 < second.0.0
+        }
+
+        if let ind = source.firstIndex(where: { $0.0.0 == "Другое" }) {
+            let item = source[ind]
+            source.remove(at: ind)
+            source.append(item)
+        }
+        return source
+    }
 
     func setupCollectionView() {
         view.addSubview(collectionView)
@@ -42,7 +85,6 @@ class CalendarViewController: UIViewController {
         ])
         
         view.addSubview(tableView)
-        tableView.tableView.backgroundColor = .gray
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
@@ -53,6 +95,37 @@ class CalendarViewController: UIViewController {
         
         tableView.tableView.backgroundColor = UIColor(Resources.Colors.Back.primary)
         collectionView.collectionView.backgroundColor = UIColor(Resources.Colors.Back.primary)
+        
+        view.addSubview(button)
+        NSLayoutConstraint.activate([
+            button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10),
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            button.widthAnchor.constraint(equalToConstant: 50),
+            button.heightAnchor.constraint(equalToConstant: 50)
+        ])
+        button.addTarget(self, action: #selector(addnewTodo), for: .touchUpInside)
+    }
+}
+
+extension CalendarViewController {
+    @objc
+    func addnewTodo() {
+        @State var isShown: Bool = true
+        let swiftUIHostingController = UIHostingController(rootView: TodoItemView(delegate: self, viewModel: TodoItemViewModel(todoItem: nil, fileCache: viewModel.fileCache), isShown: $isShown))
+        present(swiftUIHostingController, animated: true)
+    }
+}
+
+extension CalendarViewController: updateListDelegate {
+    func update() {
+        self.source = self.convertSource(self.viewModel.fileCache.todoItems)
+        self.tableView.source = self.source.map({ ("\($0.0.0)\($0.0.1)", $0.1) })
+        self.collectionView.source = self.source.map({ $0.0 })
+        self.tableView.tableView.reloadData()
+        self.collectionView.collectionView.reloadData()
+        if self.source.count != 0 {
+            self.collectionView.collectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: [])
+        }
     }
 }
 

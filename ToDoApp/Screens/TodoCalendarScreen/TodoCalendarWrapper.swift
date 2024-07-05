@@ -30,6 +30,9 @@ struct TodoCalendarWrapper: UIViewControllerRepresentable {
                 source.append(((deadline.getDayAndMonth().0, deadline.getDayAndMonth().1), [item]))
             }
         }
+        source.sort { first, second in
+            first.0.0 < second.0.0
+        }
         if let ind = source.firstIndex(where: { $0.0.0 == "Другое" }) {
             let item = source[ind]
             source.remove(at: ind)

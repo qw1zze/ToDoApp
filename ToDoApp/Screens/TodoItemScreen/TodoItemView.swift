@@ -1,6 +1,13 @@
 import SwiftUI
 
+protocol updateListDelegate {
+    func update()
+}
+
 struct TodoItemView: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    var delegate: updateListDelegate?
     @ObservedObject var viewModel: TodoItemViewModel
     @Binding var isShown: Bool
     @FocusState var onText: Bool
@@ -8,6 +15,7 @@ struct TodoItemView: View {
     @ViewBuilder private var backButton: some View {
         Button {
             isShown = false
+            dismiss()
         } label: {
             Text("Отменить")
         }
@@ -25,6 +33,8 @@ struct TodoItemView: View {
                 if viewModel.taskText != "" {
                     viewModel.saveTodoItem()
                     isShown = false
+                    delegate?.update()
+                    dismiss()
                 }
             } label: {
                 Text("Сохранить")
@@ -87,5 +97,5 @@ struct TodoItemView: View {
 #Preview {
     @State var show = true
     let viewModel = TodoItemViewModel(todoItem: nil, fileCache: FileCacheLocal())
-    return TodoItemView(viewModel: viewModel, isShown: $show)
+    return TodoItemView(delegate: nil, viewModel: viewModel, isShown: $show)
 }
