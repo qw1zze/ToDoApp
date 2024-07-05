@@ -3,9 +3,9 @@ import UIKit
 class CalendarTableView: UIView {
     var tableView: UITableView!
     
-    var source: [(String, [String])]
+    var source: [(String, [TodoItem])]
     
-    init(source: [(String, [String])]) {
+    init(source: [(String, [TodoItem])]) {
         self.source = source
         super.init(frame: .zero)
         setupTableView()
@@ -32,7 +32,6 @@ class CalendarTableView: UIView {
 }
 
 extension CalendarTableView: UITableViewDelegate {
-    
 }
 
 extension CalendarTableView: UITableViewDataSource {
@@ -49,7 +48,15 @@ extension CalendarTableView: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.setup()
-        cell.textTask.text = source[indexPath.section].1[indexPath.row]
+        if source[indexPath.section].1[indexPath.row].completed {
+            cell.textTask.attributedText = NSAttributedString(string: source[indexPath.section].1[indexPath.row].text, attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue])
+            cell.textTask.textColor = UIColor(Resources.Colors.Label.tertiary)
+        } else {
+            cell.textTask.attributedText = NSAttributedString(string: "", attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue])
+            cell.textTask.text = source[indexPath.section].1[indexPath.row].text
+            cell.textTask.textColor = UIColor(Resources.Colors.Label.primary)
+        }
+        
         return cell
     }
     

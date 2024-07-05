@@ -2,31 +2,32 @@ import SwiftUI
 import UIKit
 
 struct TodoCalendarWrapper: UIViewControllerRepresentable {
-    @Binding var todoItems: [TodoItem]
+    @ObservedObject var viewModel: CalendarViewModel
     
     func makeUIViewController(context: Context) -> some UIViewController {
-        return CalendarViewController(source: convertSource(todoItems))
+        return CalendarViewController(source: convertSource(viewModel.todoItems), viewModel: viewModel)
     }
     
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
+        
     }
     
-    func convertSource(_ items: [TodoItem]) -> [((String, String), [String])] {
-        var source = [((String, String), [String])]()
+    func convertSource(_ items: [TodoItem]) -> [((String, String), [TodoItem])] {
+        var source = [((String, String), [TodoItem])]()
         items.forEach { item in
             guard let deadline = item.deadline else {
                 if let ind = source.firstIndex(where: { $0.0.0 == "Другое" }) {
-                    source[ind].1.append(item.text)
+                    source[ind].1.append(item)
                 } else {
-                    source.append((("Другое", ""), [item.text]))
+                    source.append((("Другое", ""), [item]))
                 }
                 return
             }
             
             if let ind = source.firstIndex(where: { $0.0.0 == deadline.getDayAndMonth().0 && $0.0.1 == deadline.getDayAndMonth().1 }) {
-                source[ind].1.append(item.text)
+                source[ind].1.append(item)
             } else {
-                source.append(((deadline.getDayAndMonth().0, deadline.getDayAndMonth().1), [item.text]))
+                source.append(((deadline.getDayAndMonth().0, deadline.getDayAndMonth().1), [item]))
             }
         }
         if let ind = source.firstIndex(where: { $0.0.0 == "Другое" }) {
@@ -43,5 +44,9 @@ struct TodoCalendarWrapper: UIViewControllerRepresentable {
     
                             TodoItem(text: "asd", priority: .high, deadline: Date(),created: Date()),
                             TodoItem(text: "asd", priority: .high, deadline: Date().addingTimeInterval(86400*4),created: Date())]
-    return TodoCalendarWrapper(todoItems: $todoItems)
+    return TodoCalendarWrapper(viewModel: CalendarViewModel(fileCache: {
+        let file = FileCacheLocal()
+        file.addTodo(TodoItem(text: "asd", priority: .high, deadline: Date(),created: Date()))
+        return file
+    }()))
 }

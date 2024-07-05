@@ -86,15 +86,19 @@ struct TodoListView: View {
                 .overlay(alignment: .bottom) {
                     AddNewTodoButton(action: viewModel.showTodo)
                 }
+                .onAppear {
+                    viewModel.update()
+                }
             }
             .background(Resources.Colors.Back.primary)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink("Calendar") {
-                        TodoCalendarWrapper(todoItems: $viewModel.todoItems)
+                        TodoCalendarWrapper(viewModel: CalendarViewModel(fileCache: viewModel.fileCache))
                             .navigationTitle("Мои дела")
                             .toolbarRole(.editor)
                             .navigationBarTitleDisplayMode(.inline)
+                            .background(Resources.Colors.Back.primary.edgesIgnoringSafeArea(.bottom))
                     }
                 }
             }

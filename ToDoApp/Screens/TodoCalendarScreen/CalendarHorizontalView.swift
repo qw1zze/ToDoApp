@@ -39,7 +39,9 @@ class CalendarHorizontalView: UIView {
         collectionView.delegate = self
         
         collectionView.register(DateCell.self, forCellWithReuseIdentifier: "cell")
-        collectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: [])
+        if source.count != 0 {
+            collectionView.selectItem(at: IndexPath(item: 0, section: 0), animated: false, scrollPosition: [])
+        }
     }
     
     func setupFlowLayout() -> UICollectionViewFlowLayout {

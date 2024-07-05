@@ -27,6 +27,7 @@
 		8E4E5FEB2C37749700A428D8 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4E5FEA2C37749700A428D8 /* DateCell.swift */; };
 		8E4E5FED2C3774AB00A428D8 /* TodoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4E5FEC2C3774AB00A428D8 /* TodoCell.swift */; };
 		8E4E5FEF2C3774BF00A428D8 /* CalendarTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4E5FEE2C3774BF00A428D8 /* CalendarTableView.swift */; };
+		8E4E5FF12C38449D00A428D8 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4E5FF02C38449D00A428D8 /* CalendarViewModel.swift */; };
 		8E7DEFA02C2F0EEB0026225D /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DEF9F2C2F0EEB0026225D /* Resources.swift */; };
 		8E7DEFA42C2F41A20026225D /* PriorityPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DEFA32C2F41A20026225D /* PriorityPicker.swift */; };
 		8E7DEFA92C2F69020026225D /* Color+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DEFA82C2F69020026225D /* Color+extensions.swift */; };
@@ -85,6 +86,7 @@
 		8E4E5FEA2C37749700A428D8 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		8E4E5FEC2C3774AB00A428D8 /* TodoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoCell.swift; sourceTree = "<group>"; };
 		8E4E5FEE2C3774BF00A428D8 /* CalendarTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableView.swift; sourceTree = "<group>"; };
+		8E4E5FF02C38449D00A428D8 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		8E7DEF9F2C2F0EEB0026225D /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		8E7DEFA32C2F41A20026225D /* PriorityPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityPicker.swift; sourceTree = "<group>"; };
 		8E7DEFA82C2F69020026225D /* Color+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+extensions.swift"; sourceTree = "<group>"; };
@@ -242,6 +244,7 @@
 				8E4E5FEA2C37749700A428D8 /* DateCell.swift */,
 				8E4E5FEC2C3774AB00A428D8 /* TodoCell.swift */,
 				8E4E5FEE2C3774BF00A428D8 /* CalendarTableView.swift */,
+				8E4E5FF02C38449D00A428D8 /* CalendarViewModel.swift */,
 			);
 			path = TodoCalendarScreen;
 			sourceTree = "<group>";
@@ -433,6 +436,7 @@
 				8EB84A2F2C2C33DB00F760A2 /* TodoItemViewModel.swift in Sources */,
 				8E4E5FB32C35AAE500A428D8 /* DeadlinePickerRow.swift in Sources */,
 				8E4E5FBA2C35E6FB00A428D8 /* AddNewTodoButton.swift in Sources */,
+				8E4E5FF12C38449D00A428D8 /* CalendarViewModel.swift in Sources */,
 				8E4E5FED2C3774AB00A428D8 /* TodoCell.swift in Sources */,
 				8EB84A2A2C2B207C00F760A2 /* TodoItemView.swift in Sources */,
 				8EECD0D92C2A3D2F00064D64 /* FileManager+extensions.swift in Sources */,
