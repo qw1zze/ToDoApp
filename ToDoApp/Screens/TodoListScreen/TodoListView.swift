@@ -82,15 +82,23 @@ struct TodoListView: View {
                     }
                 }
                 .scrollContentBackground(.hidden)
-                .padding(.horizontal, -16)
                 .navigationTitle("Мои дела")
                 .overlay(alignment: .bottom) {
                     AddNewTodoButton(action: viewModel.showTodo)
                 }
             }
             .background(Resources.Colors.Back.primary)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink("Calendar") {
+                        TodoCalendarWrapper(todoItems: $viewModel.todoItems)
+                            .navigationTitle("Мои дела")
+                            .toolbarRole(.editor)
+                            .navigationBarTitleDisplayMode(.inline)
+                    }
+                }
+            }
         }
-        .padding(.horizontal, 16)
         .background(Resources.Colors.Back.primary)
         .sheet(isPresented: $viewModel.isShownTodo, onDismiss: { selectedTodo = nil; viewModel.update() }) {
             TodoItemView(viewModel: TodoItemViewModel(todoItem: selectedTodo, fileCache: viewModel.fileCache), isShown: $viewModel.isShownTodo)
