@@ -105,7 +105,7 @@ struct TodoListView: View {
         }
         .background(Resources.Colors.Back.primary)
         .sheet(isPresented: $viewModel.isShownTodo, onDismiss: { selectedTodo = nil; viewModel.update() }) {
-            TodoItemView(viewModel: TodoItemViewModel(todoItem: selectedTodo, fileCache: viewModel.fileCache), isShown: $viewModel.isShownTodo)
+            TodoItemView(viewModel: TodoItemViewModel(todoItem: selectedTodo, fileCache: viewModel.fileCache))
         }
     }
 }

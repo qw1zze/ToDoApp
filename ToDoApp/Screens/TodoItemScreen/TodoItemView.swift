@@ -6,15 +6,13 @@ protocol updateListDelegate {
 
 struct TodoItemView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject var viewModel: TodoItemViewModel
+    @FocusState var onText: Bool
     
     var delegate: updateListDelegate?
-    @ObservedObject var viewModel: TodoItemViewModel
-    @Binding var isShown: Bool
-    @FocusState var onText: Bool
     
     @ViewBuilder private var backButton: some View {
         Button {
-            isShown = false
             dismiss()
         } label: {
             Text("Отменить")
@@ -32,7 +30,6 @@ struct TodoItemView: View {
             Button {
                 if viewModel.taskText != "" {
                     viewModel.saveTodoItem()
-                    isShown = false
                     delegate?.update()
                     dismiss()
                 }
@@ -73,7 +70,7 @@ struct TodoItemView: View {
                     .background(Resources.Colors.Back.secondary)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     
-                    DeleteButton(viewModel: viewModel, isShown: $isShown)
+                    DeleteButton(viewModel: viewModel)
                 }
                 .padding(16)
             }  
@@ -97,5 +94,5 @@ struct TodoItemView: View {
 #Preview {
     @State var show = true
     let viewModel = TodoItemViewModel(todoItem: nil, fileCache: FileCacheLocal())
-    return TodoItemView(delegate: nil, viewModel: viewModel, isShown: $show)
+    return TodoItemView(viewModel: viewModel, delegate: nil)
 }

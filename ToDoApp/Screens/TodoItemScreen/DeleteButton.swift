@@ -1,13 +1,13 @@
 import SwiftUI
 
 struct DeleteButton: View {
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: TodoItemViewModel
-    @Binding var isShown: Bool
     
     var body: some View {
         Button {
             viewModel.deleteTodoItem()
-            isShown = false
+            dismiss()
         } label: {
             Text("Удалить")
                 .foregroundStyle(viewModel.todoItem?.id != nil ? Resources.Colors.red: Resources.Colors.Label.disable)

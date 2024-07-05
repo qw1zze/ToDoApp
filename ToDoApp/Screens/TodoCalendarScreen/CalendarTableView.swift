@@ -17,9 +17,15 @@ class CalendarTableView: UIView {
     
     func setupTableView() {
         tableView = UITableView(frame: self.frame, style: .insetGrouped)
+        
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(TodoCell.self, forCellReuseIdentifier: "todoCell")
+        
+        setupLayout()
+    }
+    
+    func setupLayout() {
         addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -28,11 +34,11 @@ class CalendarTableView: UIView {
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
+        tableView.backgroundColor = UIColor(Resources.Colors.Back.primary)
     }
 }
 
-extension CalendarTableView: UITableViewDelegate {
-}
+extension CalendarTableView: UITableViewDelegate { }
 
 extension CalendarTableView: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -47,6 +53,7 @@ extension CalendarTableView: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as? TodoCell else {
             return UITableViewCell()
         }
+        
         cell.setup()
         if source[indexPath.section].1[indexPath.row].completed {
             cell.textTask.attributedText = NSAttributedString(string: source[indexPath.section].1[indexPath.row].text, attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue])

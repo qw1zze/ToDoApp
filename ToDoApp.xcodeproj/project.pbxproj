@@ -28,6 +28,8 @@
 		8E4E5FED2C3774AB00A428D8 /* TodoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4E5FEC2C3774AB00A428D8 /* TodoCell.swift */; };
 		8E4E5FEF2C3774BF00A428D8 /* CalendarTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4E5FEE2C3774BF00A428D8 /* CalendarTableView.swift */; };
 		8E4E5FF12C38449D00A428D8 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4E5FF02C38449D00A428D8 /* CalendarViewModel.swift */; };
+		8E4E5FF32C389FE200A428D8 /* CalendarHorizontalView+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4E5FF22C389FE200A428D8 /* CalendarHorizontalView+extensions.swift */; };
+		8E4E5FF52C38B83400A428D8 /* CalendarViewController+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4E5FF42C38B83400A428D8 /* CalendarViewController+extensions.swift */; };
 		8E7DEFA02C2F0EEB0026225D /* Resources.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DEF9F2C2F0EEB0026225D /* Resources.swift */; };
 		8E7DEFA42C2F41A20026225D /* PriorityPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DEFA32C2F41A20026225D /* PriorityPicker.swift */; };
 		8E7DEFA92C2F69020026225D /* Color+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7DEFA82C2F69020026225D /* Color+extensions.swift */; };
@@ -87,6 +89,8 @@
 		8E4E5FEC2C3774AB00A428D8 /* TodoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoCell.swift; sourceTree = "<group>"; };
 		8E4E5FEE2C3774BF00A428D8 /* CalendarTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableView.swift; sourceTree = "<group>"; };
 		8E4E5FF02C38449D00A428D8 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
+		8E4E5FF22C389FE200A428D8 /* CalendarHorizontalView+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CalendarHorizontalView+extensions.swift"; sourceTree = "<group>"; };
+		8E4E5FF42C38B83400A428D8 /* CalendarViewController+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CalendarViewController+extensions.swift"; sourceTree = "<group>"; };
 		8E7DEF9F2C2F0EEB0026225D /* Resources.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resources.swift; sourceTree = "<group>"; };
 		8E7DEFA32C2F41A20026225D /* PriorityPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityPicker.swift; sourceTree = "<group>"; };
 		8E7DEFA82C2F69020026225D /* Color+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+extensions.swift"; sourceTree = "<group>"; };
@@ -245,6 +249,8 @@
 				8E4E5FEC2C3774AB00A428D8 /* TodoCell.swift */,
 				8E4E5FEE2C3774BF00A428D8 /* CalendarTableView.swift */,
 				8E4E5FF02C38449D00A428D8 /* CalendarViewModel.swift */,
+				8E4E5FF22C389FE200A428D8 /* CalendarHorizontalView+extensions.swift */,
+				8E4E5FF42C38B83400A428D8 /* CalendarViewController+extensions.swift */,
 			);
 			path = TodoCalendarScreen;
 			sourceTree = "<group>";
@@ -424,8 +430,10 @@
 				8E4E5FE72C37744800A428D8 /* CalendarViewController.swift in Sources */,
 				8E4E5FB12C35AA4000A428D8 /* PriorityPickerRow.swift in Sources */,
 				8E7DEFA42C2F41A20026225D /* PriorityPicker.swift in Sources */,
+				8E4E5FF52C38B83400A428D8 /* CalendarViewController+extensions.swift in Sources */,
 				8E7DEFA92C2F69020026225D /* Color+extensions.swift in Sources */,
 				8EECD0D22C2A354200064D64 /* TodoItem+JSON.swift in Sources */,
+				8E4E5FF32C389FE200A428D8 /* CalendarHorizontalView+extensions.swift in Sources */,
 				8EB84A2C2C2B471D00F760A2 /* TodoListView.swift in Sources */,
 				8E4E5FBD2C360B3F00A428D8 /* TodoCalendarWrapper.swift in Sources */,
 				8E4E5FEB2C37749700A428D8 /* DateCell.swift in Sources */,
@@ -623,7 +631,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = hse.dk.ToDoApp;
+				PRODUCT_BUNDLE_IDENTIFIER = hse.ToDoApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -652,7 +660,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = hse.dk.ToDoApp;
+				PRODUCT_BUNDLE_IDENTIFIER = hse.ToDoApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

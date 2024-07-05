@@ -8,8 +8,9 @@ class TodoCell: UITableViewCell {
         
         textTask.translatesAutoresizingMaskIntoConstraints = false
         
-        textTask.adjustsFontSizeToFitWidth = true
+        textTask.numberOfLines = 3
         textTask.textAlignment = .left
+        textTask.textColor = UIColor(Resources.Colors.Label.primary)
         
         self.clipsToBounds = true
         
