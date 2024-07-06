@@ -10,12 +10,8 @@ extension CalendarHorizontalView: UICollectionViewDelegate {
     }
     
     func scrollToItem(_ index: Int) {
-        collectionView.scrollToItem(at: IndexPath(item: index, section: 0), at: .left, animated: false)
-        self.collectionView.selectItem(
-            at: IndexPath(item: index, section: 0),
-            animated: false,
-            scrollPosition: []
-        )
+        collectionView.scrollToItem(at: IndexPath(item: index, section: 0), at: .left, animated: true)
+        self.collectionView.selectItem(at: IndexPath(item: index, section: 0), animated: true, scrollPosition: [])
     }
 }
 

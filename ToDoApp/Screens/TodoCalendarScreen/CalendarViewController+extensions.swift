@@ -27,7 +27,7 @@ extension CalendarViewController: updateListDelegate {
 //Mark: - Realize scroll for tableView from collectionView
 extension CalendarViewController: ScrollTableViewDelegate {
     func scrollToItem(to index: Int) {
-        tableView.tableView.scrollToRow(at: IndexPath(item: 0, section: index), at: .top, animated: false)
+        tableView.tableView.scrollToRow(at: IndexPath(item: 0, section: index), at: .top, animated: true)
     }
 }
 
@@ -39,10 +39,9 @@ extension CalendarViewController: UITableViewDelegate {
             let item = self.viewModel.source[indexPath.section].1[indexPath.row]
 
             self.tableView.source[indexPath.section].1[indexPath.row] = self.viewModel.completeTask(item)
-            
+            tableView.reloadRows(at: [indexPath], with: .fade)
             completion(true)
         }
-        tableView.reloadData()
         completeAction.image = UIImage(systemName: "checkmark.circle")
         completeAction.backgroundColor = UIColor(Resources.Colors.green)
         
@@ -56,10 +55,9 @@ extension CalendarViewController: UITableViewDelegate {
 
             self.tableView.source[indexPath.section].1[indexPath.row] = self.viewModel.uncompleteTask(item)
             print(self.tableView.source[indexPath.section].1[indexPath.row])
-            
+            tableView.reloadRows(at: [indexPath], with: .fade)
             completion(true)
         }
-        tableView.reloadData()
         uncompleteAction.image = UIImage(systemName: "xmark.circle")
         uncompleteAction.backgroundColor = UIColor(Resources.Colors.red)
         
@@ -71,9 +69,10 @@ extension CalendarViewController: UITableViewDelegate {
 //Mark: - Realize scroll collectionView from tableView
 extension CalendarViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let visibleSections = tableView.tableView.indexPathsForVisibleRows?.map { $0.section } ?? []
-        if let firstVisibleSection = visibleSections.first {
-            collectionView.scrollToItem(firstVisibleSection)
+        if (scrollView.isTracking || scrollView.isDragging || scrollView.isDecelerating) {
+            if let section = tableView.tableView.indexPathsForVisibleRows?.first {
+                collectionView.scrollToItem(section.section)
+            }
         }
     }
 }
