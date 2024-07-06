@@ -7,6 +7,8 @@ final class TodoItemViewModel: ObservableObject {
     @Published var hasDeadline: Bool
     @Published var deadline: Date
     @Published var IsShowDatePicker: Bool
+    @Published var category: Category
+    @Published var selectionCategory: Int = 0
     
     private var fileCache: FileCache
     
@@ -18,6 +20,8 @@ final class TodoItemViewModel: ObservableObject {
         self.deadline = todoItem?.deadline ?? Date()
         self.IsShowDatePicker = false
         self.fileCache = fileCache
+        self.category = todoItem?.category ?? .other
+        self.selectionCategory = self.category.getInt()
     }
     
     var hasDatePicker: Bool {
@@ -31,7 +35,8 @@ final class TodoItemViewModel: ObservableObject {
                                 deadline: hasDeadline ? deadline : nil,
                                 completed: todoItem?.completed ?? false,
                                 created: todoItem?.created ?? Date(),
-                                changed: Date()
+                                changed: Date(),
+                                category: category
         )
         fileCache.addTodo(todoItem)
     }

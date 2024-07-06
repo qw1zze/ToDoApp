@@ -10,6 +10,7 @@ struct TodoItemView: View {
     @FocusState var onText: Bool
     
     var delegate: updateListDelegate?
+    let categories = ["работа", "учеба", "хобби", "другое"]
     
     @ViewBuilder private var backButton: some View {
         Button {
@@ -29,6 +30,7 @@ struct TodoItemView: View {
         } else {
             Button {
                 if viewModel.taskText != "" {
+                    viewModel.category = Category(rawValue: viewModel.selectionCategory) ?? .other
                     viewModel.saveTodoItem()
                     delegate?.update()
                     dismiss()
@@ -49,6 +51,20 @@ struct TodoItemView: View {
                         
                         PriorityPickerRow(priority: $viewModel.priority)
                         
+                        Divider()
+                        
+                        HStack {
+                            Text("Категория")
+                            
+                            Spacer()
+                            
+                            Picker(selection: $viewModel.selectionCategory, label: Text("")) {
+                                ForEach(0..<categories.count, id: \.self) { index in
+                                    Text(categories[index])
+                                }
+                            }
+                        }
+
                         Divider()
                         
                         DeadlinePickerRow(hasDeadline: $viewModel.hasDeadline, deadline: $viewModel.deadline, viewModel: viewModel)

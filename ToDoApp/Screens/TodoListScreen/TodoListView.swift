@@ -93,12 +93,14 @@ struct TodoListView: View {
             .background(Resources.Colors.Back.primary)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink("Calendar") {
+                    NavigationLink() {
                         TodoCalendarWrapper(viewModel: CalendarViewModel(fileCache: viewModel.fileCache))
                             .navigationTitle("Мои дела")
                             .toolbarRole(.editor)
                             .navigationBarTitleDisplayMode(.inline)
                             .background(Resources.Colors.Back.primary.edgesIgnoringSafeArea(.bottom))
+                    } label: {
+                        Image(systemName: "calendar")
                     }
                 }
             }

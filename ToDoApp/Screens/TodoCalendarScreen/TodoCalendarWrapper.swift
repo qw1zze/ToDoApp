@@ -18,7 +18,7 @@ struct TodoCalendarWrapper: UIViewControllerRepresentable {
                             TodoItem(text: "asd", priority: .high, deadline: Date().addingTimeInterval(86400*4),created: Date())]
     return TodoCalendarWrapper(viewModel: CalendarViewModel(fileCache: {
         let file = FileCacheLocal()
-        file.addTodo(TodoItem(text: "asd", priority: .high, deadline: Date(),created: Date()))
+        file.addTodo(TodoItem(text: "asd", priority: .high, deadline: Date(),created: Date(), category: .hobby))
         file.addTodo(TodoItem(text: "asd", priority: .high, deadline: Date().addingTimeInterval(86400 * 4),created: Date()))
         file.addTodo(TodoItem(text: "asd", priority: .high, deadline: Date().addingTimeInterval(86400),created: Date()))
         file.addTodo(TodoItem(text: "asd", priority: .high, deadline: Date().addingTimeInterval(86400),created: Date()))

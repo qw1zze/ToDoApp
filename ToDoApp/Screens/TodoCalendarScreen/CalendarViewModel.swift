@@ -18,7 +18,8 @@ final class CalendarViewModel: ObservableObject {
                                      deadline: todo.deadline,
                                      completed: true,
                                      created: todo.created,
-                                     changed: todo.changed)
+                                     changed: todo.changed,
+                                     category: todo.category)
         fileCache.updateTodo(completedTodo)
         self.todoItems = fileCache.todoItems
         return completedTodo
@@ -31,7 +32,8 @@ final class CalendarViewModel: ObservableObject {
                                      deadline: todo.deadline,
                                      completed: false,
                                      created: todo.created,
-                                     changed: todo.changed)
+                                     changed: todo.changed,
+                                     category: todo.category)
         fileCache.updateTodo(uncompletedTodo)
         self.todoItems = fileCache.todoItems
         return uncompletedTodo

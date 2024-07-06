@@ -37,7 +37,6 @@ extension CalendarViewController: UITableViewDelegate {
         let completeAction = UIContextualAction(style: .normal, title: nil) { _, _, completion in
             
             let item = self.viewModel.source[indexPath.section].1[indexPath.row]
-
             self.tableView.source[indexPath.section].1[indexPath.row] = self.viewModel.completeTask(item)
             tableView.reloadRows(at: [indexPath], with: .fade)
             completion(true)
@@ -54,7 +53,6 @@ extension CalendarViewController: UITableViewDelegate {
             let item = self.viewModel.source[indexPath.section].1[indexPath.row]
 
             self.tableView.source[indexPath.section].1[indexPath.row] = self.viewModel.uncompleteTask(item)
-            print(self.tableView.source[indexPath.section].1[indexPath.row])
             tableView.reloadRows(at: [indexPath], with: .fade)
             completion(true)
         }

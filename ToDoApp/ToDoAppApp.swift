@@ -19,7 +19,7 @@ struct ToDoAppApp: App {
                 fileCache.addTodo(TodoItem(text: "Сделать очень сложную таску с очень большим описанием и очень близкм дедлайном в объеме на 3 строки",
                                            priority: .neutral, deadline: Date().addingTimeInterval(86400 * 4), completed: false, created: Date(), changed: Date()))
                 fileCache.addTodo(TodoItem(text: "Купить клавиатуру", priority: .high, deadline: nil, completed: false, created: Date(), changed: Date()))
-                fileCache.addTodo(TodoItem(text: "Поесть ягоды", priority: .neutral, deadline: nil, completed: true, created: Date(), changed: Date()))
+                fileCache.addTodo(TodoItem(text: "Поесть ягоды", priority: .neutral, deadline: nil, completed: false, created: Date(), changed: Date()))
                 fileCache.addTodo(TodoItem(text: "Решить задачу по алгосам", priority: .neutral, deadline: Date().addingTimeInterval(86400 * 4), completed: false, created: Date(), changed: Date()))
                 fileCache.addTodo(TodoItem(text: "Обновить мак", priority: .low, deadline: Date().addingTimeInterval(86400 * 4), completed: false, created: Date(), changed: Date()))
                 fileCache.addTodo(TodoItem(text: "Сверстать экран на ките", priority: .high, deadline: Date().addingTimeInterval(86400), completed: true, created: Date(), changed: Date()))
