@@ -1,13 +1,20 @@
 import SwiftUI
 
+protocol updateListDelegate {
+    func update()
+}
+
 struct TodoItemView: View {
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: TodoItemViewModel
-    @Binding var isShown: Bool
     @FocusState var onText: Bool
+    
+    var delegate: updateListDelegate?
+    let categories = ["работа", "учеба", "хобби", "другое"]
     
     @ViewBuilder private var backButton: some View {
         Button {
-            isShown = false
+            dismiss()
         } label: {
             Text("Отменить")
         }
@@ -23,8 +30,10 @@ struct TodoItemView: View {
         } else {
             Button {
                 if viewModel.taskText != "" {
+                    viewModel.category = Category(rawValue: viewModel.selectionCategory) ?? .other
                     viewModel.saveTodoItem()
-                    isShown = false
+                    delegate?.update()
+                    dismiss()
                 }
             } label: {
                 Text("Сохранить")
@@ -42,6 +51,20 @@ struct TodoItemView: View {
                         
                         PriorityPickerRow(priority: $viewModel.priority)
                         
+                        Divider()
+                        
+                        HStack {
+                            Text("Категория")
+                            
+                            Spacer()
+                            
+                            Picker(selection: $viewModel.selectionCategory, label: Text("")) {
+                                ForEach(0..<categories.count, id: \.self) { index in
+                                    Text(categories[index])
+                                }
+                            }
+                        }
+
                         Divider()
                         
                         DeadlinePickerRow(hasDeadline: $viewModel.hasDeadline, deadline: $viewModel.deadline, viewModel: viewModel)
@@ -63,7 +86,7 @@ struct TodoItemView: View {
                     .background(Resources.Colors.Back.secondary)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     
-                    DeleteButton(viewModel: viewModel, isShown: $isShown)
+                    DeleteButton(viewModel: viewModel)
                 }
                 .padding(16)
             }  
@@ -87,5 +110,5 @@ struct TodoItemView: View {
 #Preview {
     @State var show = true
     let viewModel = TodoItemViewModel(todoItem: nil, fileCache: FileCacheLocal())
-    return TodoItemView(viewModel: viewModel, isShown: $show)
+    return TodoItemView(viewModel: viewModel, delegate: nil)
 }

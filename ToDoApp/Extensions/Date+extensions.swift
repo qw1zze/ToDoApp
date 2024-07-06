@@ -1,10 +1,3 @@
-//
-//  Date+extensions.swift
-//  ToDoApp
-//
-//  Created by Dmitriy Kalyakin on 25.06.2024.
-//
-
 import Foundation
 
 extension Date {
@@ -15,5 +8,14 @@ extension Date {
     static func fromString(string: String?) -> Date? {
         guard let string else {return nil}
         return ISO8601DateFormatter().date(from: string)
+    }
+    
+    func getDayAndMonth() -> (String, String) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM"
+        let month = dateFormatter.string(from: self)
+        dateFormatter.dateFormat = "dd"
+        let day = dateFormatter.string(from: self)
+        return (day, month)
     }
  }

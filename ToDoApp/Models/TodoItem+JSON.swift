@@ -1,10 +1,3 @@
-//
-//  TodoItem+JSON.swift
-//  ToDoApp
-//
-//  Created by Dmitriy Kalyakin on 25.06.2024.
-//
-
 import Foundation
 
 extension TodoItem {
@@ -16,6 +9,7 @@ extension TodoItem {
             let completed = dict[TodoCodingKeys.completed.rawValue] as? Bool
             let created = Date.fromString(string: dict[TodoCodingKeys.created.rawValue] as? String)
             let changed = Date.fromString(string: dict[TodoCodingKeys.changed.rawValue] as? String)
+            let category = dict[TodoCodingKeys.category.rawValue] as? Int
             
             guard let id, let text, let completed, let created else {
                 return nil
@@ -28,6 +22,7 @@ extension TodoItem {
             self.completed = completed
             self.created = created
             self.changed = changed
+            self.category = category != nil ? Category(rawValue: category!) : nil
         }
 
     
