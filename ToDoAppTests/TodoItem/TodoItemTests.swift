@@ -5,11 +5,11 @@
 //  Created by Dmitriy Kalyakin on 25.06.2024.
 //
 
-import XCTest
 @testable import ToDoApp
+import XCTest
 
 final class TodoItemTests: XCTestCase {
-    
+
     func testTodoItemFull() {
         let todoItem = TodoItem(
             id: TodoItemTestValues.id,
@@ -20,7 +20,7 @@ final class TodoItemTests: XCTestCase {
             created: TodoItemTestValues.date,
             changed: TodoItemTestValues.date
         )
-        
+
         XCTAssertEqual(todoItem.id, TodoItemTestValues.id)
         XCTAssertEqual(todoItem.text, TodoItemTestValues.text)
         XCTAssertEqual(todoItem.priority, TodoItemTestValues.high)
@@ -29,14 +29,14 @@ final class TodoItemTests: XCTestCase {
         XCTAssertEqual(todoItem.created, TodoItemTestValues.date)
         XCTAssertEqual(todoItem.changed, TodoItemTestValues.date)
     }
-    
+
     func testTodoItemMinimal() {
         let todoItem = TodoItem(
             text: TodoItemTestValues.text,
             priority: TodoItemTestValues.neutral,
             created: TodoItemTestValues.date
         )
-        
+
         XCTAssertNotNil(todoItem.id)
         XCTAssertEqual(todoItem.text, TodoItemTestValues.text)
         XCTAssertEqual(todoItem.priority, TodoItemTestValues.neutral)

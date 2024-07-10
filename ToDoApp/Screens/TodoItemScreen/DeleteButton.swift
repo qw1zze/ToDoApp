@@ -3,7 +3,7 @@ import SwiftUI
 struct DeleteButton: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var viewModel: TodoItemViewModel
-    
+
     var body: some View {
         Button {
             viewModel.deleteTodoItem()

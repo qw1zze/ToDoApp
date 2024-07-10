@@ -12,7 +12,7 @@ extension TodoItem {
         var properties = [String]()
         var property = ""
         var inProperty = false
-        
+
         for char in csv {
             if char == "," {
                 if inProperty {
@@ -28,11 +28,11 @@ extension TodoItem {
             }
         }
         properties.append(property)
-        
+
         guard properties.count == 7 else {
             return nil
         }
-        
+
         let id = properties[0]
         let text = properties[1]
         let priority = properties[2]
@@ -40,11 +40,12 @@ extension TodoItem {
         let completed = properties[4]
         let created = properties[5]
         let changed = properties[6]
-        
-        guard let priority = Priority(rawValue: priority),  let completed = Bool(completed), let created = Date.fromString(string: created) else {
+
+        guard let priority = Priority(rawValue: priority),
+                let completed = Bool(completed), let created = Date.fromString(string: created) else {
             return nil
         }
-        
+
         return TodoItem(id: id,
                         text: text,
                         priority: priority,
@@ -53,7 +54,7 @@ extension TodoItem {
                         created: created,
                         changed: Date.fromString(string: changed))
     }
-    
+
     var csv: String {
         return "\(id),\(text),\(priority.rawValue),\(deadline?.string() ?? ""),\(completed),\(created.string())\(changed?.string() ?? "")"
     }

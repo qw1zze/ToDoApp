@@ -6,28 +6,28 @@ final class TodoItemViewModel: ObservableObject {
     @Published var priority: Priority
     @Published var hasDeadline: Bool
     @Published var deadline: Date
-    @Published var IsShowDatePicker: Bool
+    @Published var isShowDatePicker: Bool
     @Published var category: Category
     @Published var selectionCategory: Int = 0
-    
+
     private var fileCache: FileCache
-    
+
     init(todoItem: TodoItem?, fileCache: FileCache) {
         self.todoItem = todoItem
         self.taskText = todoItem?.text ?? ""
         self.priority = todoItem?.priority ?? .neutral
         self.hasDeadline = todoItem?.deadline != nil
         self.deadline = todoItem?.deadline ?? Date()
-        self.IsShowDatePicker = false
+        self.isShowDatePicker = false
         self.fileCache = fileCache
         self.category = todoItem?.category ?? .other
         self.selectionCategory = self.category.getInt()
     }
-    
+
     var hasDatePicker: Bool {
-        return hasDeadline && IsShowDatePicker
+        return hasDeadline && isShowDatePicker
     }
-    
+
     func saveTodoItem() {
         let todoItem = TodoItem(id: todoItem?.id ?? UUID().uuidString,
                                 text: taskText,
@@ -40,30 +40,30 @@ final class TodoItemViewModel: ObservableObject {
         )
         fileCache.addTodo(todoItem)
     }
-    
+
     func deleteTodoItem() {
         guard let id = todoItem?.id else {
             return
         }
-        let _ = fileCache.removeTodo(id: id)
+        _ = fileCache.removeTodo(id: id)
     }
-    
+
     func hideDatePicker() {
-        IsShowDatePicker = false
+        isShowDatePicker = false
     }
-    
+
     func toggleDatePicker() {
-        IsShowDatePicker.toggle()
+        isShowDatePicker.toggle()
     }
-    
+
     func changeStateDatePicker() {
         if !hasDeadline {
-            IsShowDatePicker = false
+            isShowDatePicker = false
         } else {
-            IsShowDatePicker = true
+            isShowDatePicker = true
         }
     }
-    
+
     func setDeadlineDefault() {
         deadline = Date().addingTimeInterval(86400)
     }

@@ -3,16 +3,16 @@ import SwiftUI
 struct TodoListView: View {
     @ObservedObject var viewModel: TodoListViewModel
     @State var selectedTodo: TodoItem?
-    
+
     private var completedTasksFilter: some View {
         HStack {
             Text("\(TodoListViewConst.completed) - \(viewModel.getCompletedCount())")
                 .textCase(.none)
                 .font(.callout)
                 .foregroundStyle(Resources.Colors.Label.secondary)
-            
+
             Spacer()
-            
+
             Button {
                 viewModel.toggleFilter()
             } label: {
@@ -25,7 +25,7 @@ struct TodoListView: View {
         }
         .padding(.horizontal, -6)
     }
-    
+
     private var newTodoRowButton: some View {
         Button {
             viewModel.showTodo()
@@ -38,13 +38,12 @@ struct TodoListView: View {
         }
         .listRowBackground(Resources.Colors.Back.secondary)
     }
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 List {
-                    Section(header: completedTasksFilter)
-                    {
+                    Section(header: completedTasksFilter) {
                         ForEach(viewModel.items) { todoItem in
                            TodoItemCell(todoItem: todoItem, viewModel: viewModel)
                                 .listRowBackground(Resources.Colors.Back.secondary)
@@ -93,7 +92,7 @@ struct TodoListView: View {
             .background(Resources.Colors.Back.primary)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink() {
+                    NavigationLink {
                         TodoCalendarWrapper(viewModel: CalendarViewModel(fileCache: viewModel.fileCache))
                             .navigationTitle(TodoListViewConst.myTasks)
                             .toolbarRole(.editor)
@@ -106,9 +105,9 @@ struct TodoListView: View {
             }
         }
         .background(Resources.Colors.Back.primary)
-        .sheet(isPresented: $viewModel.isShownTodo, onDismiss: { selectedTodo = nil; viewModel.update() }) {
+        .sheet(isPresented: $viewModel.isShownTodo, onDismiss: { selectedTodo = nil; viewModel.update() }, content: {
             TodoItemView(viewModel: TodoItemViewModel(todoItem: selectedTodo, fileCache: viewModel.fileCache))
-        }
+        })
     }
 }
 

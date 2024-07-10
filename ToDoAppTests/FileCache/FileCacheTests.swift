@@ -5,8 +5,8 @@
 //  Created by Dmitriy Kalyakin on 25.06.2024.
 //
 
-import XCTest
 @testable import ToDoApp
+import XCTest
 
 struct FileCacheTestValues {
     static let todoFirst = TodoItem(text: "Example text", priority: .high, created: Date.now, changed: Date.now)
@@ -18,7 +18,7 @@ final class FileCacheTests: XCTestCase {
     func testAddTodoNew() {
         let fileCache = FileCacheLocal()
         fileCache.addTodo(FileCacheTestValues.todoFirst)
-        
+
         XCTAssertFalse(fileCache.todoItems.isEmpty)
         XCTAssertEqual(fileCache.todoItems.first?.id, FileCacheTestValues.todoFirst.id)
         XCTAssertEqual(fileCache.todoItems.first?.text, FileCacheTestValues.todoFirst.text)
@@ -28,12 +28,12 @@ final class FileCacheTests: XCTestCase {
         XCTAssertEqual(fileCache.todoItems.first?.changed, FileCacheTestValues.todoFirst.changed)
         XCTAssertEqual(fileCache.todoItems.first?.priority, FileCacheTestValues.todoFirst.priority)
     }
-    
+
     func testAddExists() {
         let fileCache = FileCacheLocal()
         fileCache.addTodo(FileCacheTestValues.todoFirst)
         fileCache.addTodo(FileCacheTestValues.todoFirst)
-        
+
         XCTAssertTrue(fileCache.todoItems.count == 1)
         XCTAssertEqual(fileCache.todoItems.first?.id, FileCacheTestValues.todoFirst.id)
         XCTAssertEqual(fileCache.todoItems.first?.text, FileCacheTestValues.todoFirst.text)
@@ -43,12 +43,12 @@ final class FileCacheTests: XCTestCase {
         XCTAssertEqual(fileCache.todoItems.first?.changed, FileCacheTestValues.todoFirst.changed)
         XCTAssertEqual(fileCache.todoItems.first?.priority, FileCacheTestValues.todoFirst.priority)
     }
-    
+
     func testRemoveTodoExist() {
         let fileCache = FileCacheLocal()
         fileCache.addTodo(FileCacheTestValues.todoFirst)
         let removedTodo = fileCache.removeTodo(id: FileCacheTestValues.todoFirst.id)
-        
+
         XCTAssertTrue(fileCache.todoItems.isEmpty)
         XCTAssertNotNil(removedTodo)
         XCTAssertEqual(removedTodo?.id, FileCacheTestValues.todoFirst.id)
@@ -59,38 +59,38 @@ final class FileCacheTests: XCTestCase {
         XCTAssertEqual(removedTodo?.changed, FileCacheTestValues.todoFirst.changed)
         XCTAssertEqual(removedTodo?.priority, FileCacheTestValues.todoFirst.priority)
     }
-    
+
     func testRemoveTodoNotExist() {
         let fileCache = FileCacheLocal()
         fileCache.addTodo(FileCacheTestValues.todoFirst)
         let removedTodo = fileCache.removeTodo(id: FileCacheTestValues.todoSecond.id)
-        
+
         XCTAssertTrue(fileCache.todoItems.count == 1)
         XCTAssertNil(removedTodo)
     }
-    
+
     func testSaveAndRead() {
         let fileCache = FileCacheLocal()
         fileCache.addTodo(FileCacheTestValues.todoFirst)
         fileCache.addTodo(FileCacheTestValues.todoSecond)
-        try! fileCache.saveToFile(fileName: "testFile")
-        
+        try? fileCache.saveToFile(fileName: "testFile")
+
         let newFileCache = FileCacheLocal()
-        try! newFileCache.readFromFile(fileName: "testFile")
-        
+        try? newFileCache.readFromFile(fileName: "testFile")
+
         XCTAssertTrue(newFileCache.todoItems.count == fileCache.todoItems.count)
-        
-        
-        for i in 0..<fileCache.todoItems.count {
-            XCTAssertEqual(fileCache.todoItems[i].id, newFileCache.todoItems[i].id)
-            XCTAssertEqual(fileCache.todoItems[i].text, newFileCache.todoItems[i].text)
-            XCTAssertEqual(fileCache.todoItems[i].deadline?.description, newFileCache.todoItems[i].deadline?.description)
-            XCTAssertEqual(fileCache.todoItems[i].completed, newFileCache.todoItems[i].completed)
-            XCTAssertEqual(fileCache.todoItems[i].created.description, newFileCache.todoItems[i].created.description)
-            XCTAssertEqual(fileCache.todoItems[i].changed?.description, newFileCache.todoItems[i].changed?.description)
-            XCTAssertEqual(fileCache.todoItems[i].priority, newFileCache.todoItems[i].priority)
+
+        for ind in 0..<fileCache.todoItems.count {
+            XCTAssertEqual(fileCache.todoItems[ind].id, newFileCache.todoItems[ind].id)
+            XCTAssertEqual(fileCache.todoItems[ind].text, newFileCache.todoItems[ind].text)
+            XCTAssertEqual(fileCache.todoItems[ind].deadline?.description,
+                           newFileCache.todoItems[ind].deadline?.description)
+            XCTAssertEqual(fileCache.todoItems[ind].completed, newFileCache.todoItems[ind].completed)
+            XCTAssertEqual(fileCache.todoItems[ind].created.description,
+                           newFileCache.todoItems[ind].created.description)
+            XCTAssertEqual(fileCache.todoItems[ind].changed?.description,
+                           newFileCache.todoItems[ind].changed?.description)
+            XCTAssertEqual(fileCache.todoItems[ind].priority, newFileCache.todoItems[ind].priority)
         }
     }
-    
-    
 }

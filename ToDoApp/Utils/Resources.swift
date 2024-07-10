@@ -1,3 +1,4 @@
+// swiftlint:disable all
 import SwiftUI
 
 enum Resources {
@@ -7,21 +8,21 @@ enum Resources {
             static let overlay = Color("SupportOverlay")
             static let navBarBlur = Color("SupportNavBarBlur")
         }
-        
+
         enum Label {
             static let primary = Color("LabelPrimary")
             static let secondary = Color("LabelSecondary")
             static let tertiary = Color("LabelTertiary")
             static let disable = Color("LabelDisable")
         }
-        
+
         enum Back {
             static let primary = Color("BackPrimary")
             static let IOSprimary = Color("BackIOSPrimary")
             static let secondary = Color("BackSecondary")
             static let elevated = Color("BackElevated")
         }
-        
+
         static let red = Color("Red")
         static let green = Color("Green")
         static let blue = Color("Blue")
@@ -30,3 +31,4 @@ enum Resources {
         static let white = Color("White")
     }
 }
+// swiftlint:enable all
