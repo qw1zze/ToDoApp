@@ -5,14 +5,14 @@ struct PriorityPicker: View {
     
     var body: some View {
         Picker("Priority", selection: $priority) {
-            Image("Arrow.down")
+            Image(TodoItemViewConst.priorotyOptions[0])
                 .tag(Priority.low)
             
-            Text("нет")
+            Text(TodoItemViewConst.priorotyOptions[1])
                 .foregroundStyle(Resources.Colors.Label.primary)
                 .tag(Priority.neutral)
             
-            Image("HighPriority")
+            Image(TodoItemViewConst.priorotyOptions[2])
                 .tag(Priority.high)
         }
         .pickerStyle(.segmented)

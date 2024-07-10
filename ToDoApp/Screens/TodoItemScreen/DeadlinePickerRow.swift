@@ -8,7 +8,7 @@ struct DeadlinePickerRow: View {
     var body: some View {
         Toggle(isOn: $hasDeadline) {
             VStack(alignment: .leading) {
-                Text("Сделать до")
+                Text(TodoItemViewConst.makeBefore)
                     .foregroundStyle(Resources.Colors.Label.primary)
                 
                 if hasDeadline {

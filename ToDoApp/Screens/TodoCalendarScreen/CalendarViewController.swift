@@ -6,24 +6,35 @@ class CalendarViewController: UIViewController {
     
     var collectionView: CalendarHorizontalView
     
-    var tableView: CalendarTableView
+    var tableView: CalendarMainView
     
     var button: UIButton = {
-        let button = UIButton(type: .custom)
+        let button = UIButton()
+        
+        var configuration = UIButton.Configuration.plain()
+        configuration.image = UIImage(systemName: "plus.circle.fill")
+        configuration.imagePadding = 0
+        configuration.imagePlacement = .all
+        
+        configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 40)
+
+        button.configuration = configuration
+        
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOpacity = 0.4
         button.layer.shadowOffset = .zero
         button.layer.shadowRadius = 4
         button.layer.cornerRadius = 24
-        button.backgroundColor = UIColor(Resources.Colors.blue)
+        button.layer.masksToBounds = false
+        button.layer.backgroundColor = .init(red: 1, green: 1, blue: 1, alpha: 1)
         return button
     }()
     
     init(viewModel: CalendarViewModel) {
         self.viewModel = viewModel
-        collectionView = CalendarHorizontalView(days: self.viewModel.source.map({ $0.0 }))
-        tableView = CalendarTableView(source: self.viewModel.source.map({ ("\($0.0.0)\($0.0.1)", $0.1) }))
+        collectionView = CalendarHorizontalView(days: self.viewModel.source.map({ ($0.day, $0.month) }))
+        tableView = CalendarMainView(source: self.viewModel.source.map({ ("\($0.day)\($0.month)", $0.todoItems) }))
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -74,8 +85,8 @@ class CalendarViewController: UIViewController {
         NSLayoutConstraint.activate([
             button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10),
             button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button.widthAnchor.constraint(equalToConstant: 50),
-            button.heightAnchor.constraint(equalToConstant: 50)
+            button.widthAnchor.constraint(equalToConstant: 44),
+            button.heightAnchor.constraint(equalToConstant: 44)
         ])
         button.addTarget(self, action: #selector(addNewTodo), for: .touchUpInside)
     }

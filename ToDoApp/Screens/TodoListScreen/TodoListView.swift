@@ -6,7 +6,7 @@ struct TodoListView: View {
     
     private var completedTasksFilter: some View {
         HStack {
-            Text("Выполнено - \(viewModel.getCompletedCount())")
+            Text("\(TodoListViewConst.completed) - \(viewModel.getCompletedCount())")
                 .textCase(.none)
                 .font(.callout)
                 .foregroundStyle(Resources.Colors.Label.secondary)
@@ -16,7 +16,7 @@ struct TodoListView: View {
             Button {
                 viewModel.toggleFilter()
             } label: {
-                Text(viewModel.filterCompleted ? "Показать" : "Скрыть")
+                Text(viewModel.filterCompleted ? TodoListViewConst.show : TodoListViewConst.hide)
                     .font(.callout)
                     .foregroundStyle(Resources.Colors.blue)
                     .textCase(.none)
@@ -30,7 +30,7 @@ struct TodoListView: View {
         Button {
             viewModel.showTodo()
         } label: {
-            Text("Новое")
+            Text(TodoListViewConst.new)
                 .padding(.leading, 33)
                 .padding([.top, .bottom], 10)
                 .font(.system(size: 17))
@@ -95,7 +95,7 @@ struct TodoListView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink() {
                         TodoCalendarWrapper(viewModel: CalendarViewModel(fileCache: viewModel.fileCache))
-                            .navigationTitle("Мои дела")
+                            .navigationTitle(TodoListViewConst.myTasks)
                             .toolbarRole(.editor)
                             .navigationBarTitleDisplayMode(.inline)
                             .background(Resources.Colors.Back.primary.edgesIgnoringSafeArea(.bottom))

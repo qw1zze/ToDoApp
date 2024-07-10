@@ -3,7 +3,7 @@ import Foundation
 final class CalendarViewModel: ObservableObject {
     @Published var fileCache: FileCache
     @Published var todoItems: [TodoItem]
-    @Published var source: [((String, String), [TodoItem])]
+    @Published var source: [CalendarTodoItem]
     
     init(fileCache: FileCache) {
         self.fileCache = fileCache
@@ -43,29 +43,52 @@ final class CalendarViewModel: ObservableObject {
         self.source = CalendarViewModel.convertSource(self.fileCache.todoItems)
     }
     
-    static func convertSource(_ items: [TodoItem]) -> [((String, String), [TodoItem])] {
-        var source = [((String, String), [TodoItem])]()
+    static func convertSource(_ items: [TodoItem]) -> [CalendarTodoItem] {
+        let months = [
+            "Jan": 1,
+            "Feb": 2,
+            "Mar": 3,
+            "Apr": 4,
+            "May": 5,
+            "Jun": 6,
+            "Jul": 7,
+            "Aug": 8,
+            "Sep": 9,
+            "Oct": 10,
+            "Nov": 11,
+            "Dec": 12
+        ]
+        
+        var source = [CalendarTodoItem]()
         items.forEach { item in
             guard let deadline = item.deadline else {
-                if let ind = source.firstIndex(where: { $0.0.0 == "Другое" }) {
-                    source[ind].1.append(item)
+                if let ind = source.firstIndex(where: { $0.day == TodoCalendarViewConst.other }) {
+                    source[ind].todoItems.append(item)
                 } else {
-                    source.append((("Другое", ""), [item]))
+                    source.append(CalendarTodoItem(day: TodoCalendarViewConst.other, month: "", todoItems: [item]))
                 }
                 return
             }
             
-            if let ind = source.firstIndex(where: { $0.0.0 == deadline.getDayAndMonth().0 && $0.0.1 == deadline.getDayAndMonth().1 }) {
-                source[ind].1.append(item)
+            if let ind = source.firstIndex(where: { $0.day == deadline.getDayAndMonth().0 && $0.month == deadline.getDayAndMonth().1 }) {
+                source[ind].todoItems.append(item)
             } else {
-                source.append(((deadline.getDayAndMonth().0, deadline.getDayAndMonth().1), [item]))
+                source.append(CalendarTodoItem(day: deadline.getDayAndMonth().0, month: deadline.getDayAndMonth().1, todoItems: [item]))
             }
         }
+        
         source.sort { first, second in
-            first.0.0 < second.0.0
+            let firstMonth = months[first.month] ?? 0
+            let secondMonth = months[second.month] ?? 0
+            if firstMonth < secondMonth {
+                return true
+            } else if firstMonth > secondMonth {
+                return false
+            }
+            return first.day < second.day
         }
 
-        if let ind = source.firstIndex(where: { $0.0.0 == "Другое" }) {
+        if let ind = source.firstIndex(where: { $0.day == TodoCalendarViewConst.other }) {
             let item = source[ind]
             source.remove(at: ind)
             source.append(item)
