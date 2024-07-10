@@ -1,10 +1,4 @@
-//
-//  TodoItem+CSV.swift
-//  ToDoApp
-//
-//  Created by Dmitriy Kalyakin on 25.06.2024.
-//
-
+import CocoaLumberjackSwift
 import Foundation
 
 extension TodoItem {
@@ -46,6 +40,7 @@ extension TodoItem {
             return nil
         }
 
+        DDLogInfo("CREATE TODOITEM FROM PARSE")
         return TodoItem(id: id,
                         text: text,
                         priority: priority,
@@ -56,6 +51,7 @@ extension TodoItem {
     }
 
     var csv: String {
+        DDLogInfo("TODOITEM TO CSV")
         return "\(id),\(text),\(priority.rawValue),\(deadline?.string() ?? ""),\(completed),\(created.string())\(changed?.string() ?? "")"
     }
 }

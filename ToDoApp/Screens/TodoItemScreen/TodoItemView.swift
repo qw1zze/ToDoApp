@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 
 protocol UpdateListDelegate: AnyObject {
@@ -107,6 +108,9 @@ struct TodoItemView: View {
                     saveButton
                 }
             })
+            .onAppear {
+                DDLogInfo("OPENING TODOITEM VIEW")
+            }
         }
     }
 }

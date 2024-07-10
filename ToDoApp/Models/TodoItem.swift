@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 import SwiftUI
 
@@ -28,6 +29,8 @@ struct TodoItem: Identifiable {
         self.created = created
         self.changed = changed
         self.category = category ?? .other
+
+        DDLogInfo("CREATE TODOITEM")
     }
 }
 

@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import UIKit
 
@@ -48,6 +49,11 @@ class CalendarViewController: UIViewController {
 
         collectionView.delegate = self
         tableView.tableView.delegate = self
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        DDLogInfo("OPENING TODOITEM CALENDAR VIEW")
     }
 
     func setup() {

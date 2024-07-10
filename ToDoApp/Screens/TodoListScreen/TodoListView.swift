@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 
 struct TodoListView: View {
@@ -108,6 +109,9 @@ struct TodoListView: View {
         .sheet(isPresented: $viewModel.isShownTodo, onDismiss: { selectedTodo = nil; viewModel.update() }, content: {
             TodoItemView(viewModel: TodoItemViewModel(todoItem: selectedTodo, fileCache: viewModel.fileCache))
         })
+        .onAppear {
+            DDLogInfo("OPENING TODOITEM LIST VIEW")
+        }
     }
 }
 

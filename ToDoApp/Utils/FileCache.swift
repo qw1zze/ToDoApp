@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 
 enum JSONError: Error {
@@ -17,6 +18,8 @@ protocol FileCache {
 final class FileCacheLocal: FileCache {
     private(set) var todoItems = [TodoItem]()
 
+    let logger = DDOSLogger.sharedInstance
+
     private func convertToData() throws -> Data {
         let data = todoItems.map { $0.json }
         return try JSONSerialization.data(withJSONObject: data)
@@ -25,9 +28,11 @@ final class FileCacheLocal: FileCache {
     func addTodo(_ todo: TodoItem) {
         if let existedIndex = todoItems.firstIndex(where: { $0.id == todo.id}) {
             todoItems[existedIndex] = todo
+            DDLogInfo("TODO UPDATING")
             return
         }
         todoItems.append(todo)
+        DDLogInfo("TODO ADDING")
     }
 
     func removeTodo(id: String) -> TodoItem? {
@@ -52,6 +57,7 @@ final class FileCacheLocal: FileCache {
         }
         let data = try convertToData()
         try data.write(to: fileUrl)
+        DDLogInfo("TODOS SAVING")
     }
 
     func readFromFile(fileName: String) throws {
@@ -63,5 +69,6 @@ final class FileCacheLocal: FileCache {
         let jsonData = try Data(contentsOf: fileUrl)
         let jsonObject = (try JSONSerialization.jsonObject(with: jsonData) as? [[String: Any]]) ?? []
         todoItems = jsonObject.compactMap { TodoItem(dict: $0) }
+        DDLogInfo("TODOS READING")
     }
 }
