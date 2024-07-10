@@ -44,7 +44,7 @@ class CalendarHorizontalView: UIView {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(DateCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.register(DateCell.self, forCellWithReuseIdentifier: DateCell.reuseIdentifier)
         
         self.backgroundColor = UIColor(Resources.Colors.Back.primary)
         collectionView.backgroundColor = UIColor(Resources.Colors.Back.primary)

@@ -1,8 +1,10 @@
 import UIKit
 
 class DateCell: UICollectionViewCell {
-    var day = UILabel()
-    var month = UILabel()
+    static let reuseIdentifier = "dateCell"
+    
+    var dayLabel = UILabel()
+    var monthLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -22,35 +24,40 @@ class DateCell: UICollectionViewCell {
     }
     
     func setupDay() {
-        self.contentView.addSubview(day)
-        day.translatesAutoresizingMaskIntoConstraints = false
-        day.adjustsFontSizeToFitWidth = true
-        day.textAlignment = .center
-        day.font = .systemFont(ofSize: 17)
-        day.textColor = UIColor(Resources.Colors.Label.secondary)
+        self.contentView.addSubview(dayLabel)
+        dayLabel.translatesAutoresizingMaskIntoConstraints = false
+        dayLabel.adjustsFontSizeToFitWidth = true
+        dayLabel.textAlignment = .center
+        dayLabel.font = .systemFont(ofSize: 17)
+        dayLabel.textColor = UIColor(Resources.Colors.Label.secondary)
         
         NSLayoutConstraint.activate([
-            day.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
-            day.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            day.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            dayLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
+            dayLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            dayLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
     }
     
     func setupMonth() {
-        self.contentView.addSubview(month)
+        self.contentView.addSubview(monthLabel)
         
-        month.translatesAutoresizingMaskIntoConstraints = false
-        month.textAlignment = .center
-        month.adjustsFontSizeToFitWidth = true
-        month.font = .systemFont(ofSize: 17)
-        month.textColor = UIColor(Resources.Colors.Label.secondary)
+        monthLabel.translatesAutoresizingMaskIntoConstraints = false
+        monthLabel.textAlignment = .center
+        monthLabel.adjustsFontSizeToFitWidth = true
+        monthLabel.font = .systemFont(ofSize: 17)
+        monthLabel.textColor = UIColor(Resources.Colors.Label.secondary)
         
         NSLayoutConstraint.activate([
-            month.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
-            month.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
-            month.topAnchor.constraint(equalTo: day.bottomAnchor),
-            month.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15),
+            monthLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 15),
+            monthLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -15),
+            monthLabel.topAnchor.constraint(equalTo: dayLabel.bottomAnchor),
+            monthLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15),
         ])
+    }
+    
+    func setupCell(day: String, month: String) {
+        dayLabel.text = day
+        monthLabel.text = month
     }
     
     override var isSelected: Bool {

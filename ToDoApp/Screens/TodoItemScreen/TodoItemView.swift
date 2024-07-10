@@ -10,13 +10,13 @@ struct TodoItemView: View {
     @FocusState var onText: Bool
     
     var delegate: updateListDelegate?
-    let categories = ["работа", "учеба", "хобби", "другое"]
+    let categories = TodoItemViewConst.categoryOptions
     
     @ViewBuilder private var backButton: some View {
         Button {
             dismiss()
         } label: {
-            Text("Отменить")
+            Text(TodoItemViewConst.cancel)
         }
     }
     
@@ -25,7 +25,7 @@ struct TodoItemView: View {
             Button {
                 onText = false
             } label: {
-                Text("Закрыть")
+                Text(TodoItemViewConst.close)
             }
         } else {
             Button {
@@ -36,7 +36,7 @@ struct TodoItemView: View {
                     dismiss()
                 }
             } label: {
-                Text("Сохранить")
+                Text(TodoItemViewConst.save)
             }
         }
     }
@@ -54,7 +54,7 @@ struct TodoItemView: View {
                         Divider()
                         
                         HStack {
-                            Text("Категория")
+                            Text(TodoItemViewConst.category)
                             
                             Spacer()
                             
@@ -92,7 +92,7 @@ struct TodoItemView: View {
             }  
             .animation(.easeInOut, value: viewModel.hasDatePicker)
             .background(Resources.Colors.Back.primary)
-            .navigationTitle("Дело")
+            .navigationTitle(TodoItemViewConst.task)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {

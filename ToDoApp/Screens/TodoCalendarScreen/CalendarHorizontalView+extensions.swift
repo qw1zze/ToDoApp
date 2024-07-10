@@ -21,12 +21,11 @@ extension CalendarHorizontalView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard  let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? DateCell else {
+        guard  let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DateCell.reuseIdentifier, for: indexPath) as? DateCell else {
             return UICollectionViewCell()
         }
-        
-        cell.day.text = source[indexPath.item].0
-        cell.month.text = source[indexPath.item].1
+
+        cell.setupCell(day: source[indexPath.item].0, month: source[indexPath.item].1)
         
         return cell
     }

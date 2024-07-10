@@ -5,7 +5,7 @@ struct PriorityPickerRow: View {
     
     var body: some View {
         HStack {
-            Text("Важность")
+            Text(TodoItemViewConst.priority)
             
             Spacer()
             

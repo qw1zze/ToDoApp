@@ -1,6 +1,6 @@
 import UIKit
 
-class CalendarTableView: UIView {
+class CalendarMainView: UIView {
     var tableView: UITableView!
     
     var source: [(String, [TodoItem])]
@@ -20,7 +20,7 @@ class CalendarTableView: UIView {
         
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(TodoCell.self, forCellReuseIdentifier: "todoCell")
+        tableView.register(TodoCell.self, forCellReuseIdentifier: TodoCell.reuseIdentifier)
         
         setupLayout()
     }
@@ -38,9 +38,9 @@ class CalendarTableView: UIView {
     }
 }
 
-extension CalendarTableView: UITableViewDelegate { }
+extension CalendarMainView: UITableViewDelegate { }
 
-extension CalendarTableView: UITableViewDataSource {
+extension CalendarMainView: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         source.count
     }
@@ -50,36 +50,13 @@ extension CalendarTableView: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "todoCell", for: indexPath) as? TodoCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TodoCell.reuseIdentifier, for: indexPath) as? TodoCell else {
             return UITableViewCell()
         }
         
         cell.setup()
-        print(source[indexPath.section].1[indexPath.row])
-        if source[indexPath.section].1[indexPath.row].completed {
-            cell.textTask.attributedText = NSAttributedString(string: source[indexPath.section].1[indexPath.row].text, attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue])
-            cell.textTask.textColor = UIColor(Resources.Colors.Label.tertiary)
-        } else {
-            cell.textTask.attributedText = NSAttributedString(string: "", attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue])
-            cell.textTask.text = source[indexPath.section].1[indexPath.row].text
-            cell.textTask.textColor = UIColor(Resources.Colors.Label.primary)
-        }
-        
-        if let ind = source[indexPath.section].1[indexPath.row].category?.getInt() {
-            switch ind {
-            case 0:
-                cell.category.backgroundColor = UIColor(.red)
-            case 1:
-                cell.category.backgroundColor = UIColor(.blue)
-            case 2:
-                cell.category.backgroundColor = UIColor(.green)
-            case 3:
-                cell.category.backgroundColor = .clear
-                break
-            default:
-                break
-            }
-        }
+
+        cell.setupStyle(todo: source[indexPath.section].1[indexPath.row])
         
         return cell
     }

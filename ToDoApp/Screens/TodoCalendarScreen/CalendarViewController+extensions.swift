@@ -14,8 +14,9 @@ extension CalendarViewController {
 extension CalendarViewController: updateListDelegate {
     func update() {
         viewModel.updateItems()
-        self.tableView.source = self.viewModel.source.map({ ("\($0.0.0)\($0.0.1)", $0.1) })
-        self.collectionView.source = self.viewModel.source.map({ $0.0 })
+        
+        self.tableView.source = self.viewModel.source.map({ ("\($0.day)\($0.month)", $0.todoItems) })
+        self.collectionView.source = self.viewModel.source.map({ ($0.day, $0.month) })
         self.tableView.tableView.reloadData()
         self.collectionView.collectionView.reloadData()
         if self.viewModel.source.count != 0 {
@@ -36,7 +37,7 @@ extension CalendarViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let completeAction = UIContextualAction(style: .normal, title: nil) { _, _, completion in
             
-            let item = self.viewModel.source[indexPath.section].1[indexPath.row]
+            let item = self.viewModel.source[indexPath.section].todoItems[indexPath.row]
             self.tableView.source[indexPath.section].1[indexPath.row] = self.viewModel.completeTask(item)
             tableView.reloadRows(at: [indexPath], with: .fade)
             completion(true)
@@ -50,7 +51,7 @@ extension CalendarViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let uncompleteAction = UIContextualAction(style: .normal, title: nil) { _, _, completion in
-            let item = self.viewModel.source[indexPath.section].1[indexPath.row]
+            let item = self.viewModel.source[indexPath.section].todoItems[indexPath.row]
 
             self.tableView.source[indexPath.section].1[indexPath.row] = self.viewModel.uncompleteTask(item)
             tableView.reloadRows(at: [indexPath], with: .fade)
