@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AddNewTodoButton: View {
     var action: () -> Void
-    
+
     var body: some View {
         Button {
             action()

@@ -5,11 +5,11 @@
 //  Created by Dmitriy Kalyakin on 22.06.2024.
 //
 
-import XCTest
 @testable import ToDoApp
+import XCTest
 
 final class TodoItemJSONTests: XCTestCase {
-    
+
     func testJsonParseWithFullDictionary() {
         let jsonDict: [String: Any] = [
             TodoCodingKeys.id.rawValue: TodoItemTestValues.id,
@@ -20,7 +20,7 @@ final class TodoItemJSONTests: XCTestCase {
             TodoCodingKeys.created.rawValue: TodoItemTestValues.date.string(),
             TodoCodingKeys.changed.rawValue: TodoItemTestValues.date.string()
         ]
-        
+
         let json = try? JSONSerialization.data(withJSONObject: jsonDict)
         XCTAssertNotNil(json)
         let todoItem = TodoItem.parse(json: json!)
@@ -33,15 +33,15 @@ final class TodoItemJSONTests: XCTestCase {
         XCTAssertEqual(todoItem?.deadline, Date.fromString(string: TodoItemTestValues.date.string()))
         XCTAssertEqual(todoItem?.changed, Date.fromString(string: TodoItemTestValues.date.string()))
     }
-    
+
     func testJsonParseWithMinimalDictionary() {
         let jsonDict: [String: Any] = [
             TodoCodingKeys.id.rawValue: TodoItemTestValues.id,
             TodoCodingKeys.text.rawValue: TodoItemTestValues.text,
             TodoCodingKeys.completed.rawValue: true,
-            TodoCodingKeys.created.rawValue: TodoItemTestValues.date.string(),
+            TodoCodingKeys.created.rawValue: TodoItemTestValues.date.string()
         ]
-        
+
         let json = try? JSONSerialization.data(withJSONObject: jsonDict)
         XCTAssertNotNil(json)
         let todoItem = TodoItem.parse(json: json!)
@@ -54,21 +54,21 @@ final class TodoItemJSONTests: XCTestCase {
         XCTAssertNil(todoItem?.deadline)
         XCTAssertNil(todoItem?.changed)
     }
-    
+
     func testJsonParseWithInvalidDictionary() {
         let jsonDict: [String: Any] = [
             TodoCodingKeys.id.rawValue: TodoItemTestValues.id,
             TodoCodingKeys.text.rawValue: TodoItemTestValues.text,
             TodoCodingKeys.completed.rawValue: TodoItemTestValues.date.string(),
-            TodoCodingKeys.created.rawValue: TodoItemTestValues.date.string(),
+            TodoCodingKeys.created.rawValue: TodoItemTestValues.date.string()
         ]
-        
+
         let json = try? JSONSerialization.data(withJSONObject: jsonDict)
         XCTAssertNotNil(json)
         let todoItem = TodoItem.parse(json: json!)
         XCTAssertNil(todoItem)
     }
-    
+
     func testTodoWithFullJson() {
         let todoItem = TodoItem(
             id: TodoItemTestValues.id,
@@ -79,7 +79,7 @@ final class TodoItemJSONTests: XCTestCase {
             created: TodoItemTestValues.date,
             changed: TodoItemTestValues.date
         )
-        
+
         let json = todoItem.json as? [String: Any]
         XCTAssertNotNil(json)
         XCTAssertEqual(json?[TodoCodingKeys.id.rawValue] as? String, TodoItemTestValues.id)
@@ -90,7 +90,7 @@ final class TodoItemJSONTests: XCTestCase {
         XCTAssertEqual(json?[TodoCodingKeys.deadline.rawValue] as? String, TodoItemTestValues.date.string())
         XCTAssertEqual(json?[TodoCodingKeys.changed.rawValue] as? String, TodoItemTestValues.date.string())
     }
-    
+
     func testTodoWithMinimalJson() {
         let todoItem = TodoItem(
             id: TodoItemTestValues.id,
@@ -99,7 +99,7 @@ final class TodoItemJSONTests: XCTestCase {
             completed: false,
             created: TodoItemTestValues.date
         )
-        
+
         let json = todoItem.json as? [String: Any]
         XCTAssertNotNil(json)
         XCTAssertEqual(json?[TodoCodingKeys.id.rawValue] as? String, TodoItemTestValues.id)

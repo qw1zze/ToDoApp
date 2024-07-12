@@ -1,7 +1,9 @@
+import CocoaLumberjackSwift
+import FileCacheUtil
 import Foundation
 import SwiftUI
 
-struct TodoItem: Identifiable {
+struct TodoItem: FileCachable {
     let id: String
     let text: String
     let priority: Priority
@@ -10,13 +12,13 @@ struct TodoItem: Identifiable {
     let created: Date
     let changed: Date?
     let category: Category?
-    
+
     init(id: String = UUID().uuidString,
-         text: String, 
+         text: String,
          priority: Priority,
          deadline: Date? = nil,
          completed: Bool = false,
-         created: Date, 
+         created: Date,
          changed: Date? = nil,
          category: Category? = nil
     ) {
@@ -28,6 +30,8 @@ struct TodoItem: Identifiable {
         self.created = created
         self.changed = changed
         self.category = category ?? .other
+
+        DDLogInfo("CREATE TODOITEM")
     }
 }
 
@@ -36,7 +40,7 @@ enum Category: Int {
     case learn
     case hobby
     case other
-    
+
     init?(rawValue: Int) {
         switch rawValue {
         case 0:
@@ -51,7 +55,7 @@ enum Category: Int {
             self = .other
         }
     }
-    
+
     func getInt() -> Int {
         switch self {
         case .work:
@@ -73,12 +77,12 @@ enum Priority: String {
 }
 
 enum TodoCodingKeys: String, CaseIterable {
-    case id = "id"
-    case text = "text"
-    case priority = "priority"
-    case deadline = "deadline"
-    case completed = "completed"
-    case created = "created"
-    case changed = "changed"
-    case category = "category"
+    case id
+    case text
+    case priority
+    case deadline
+    case completed
+    case created
+    case changed
+    case category
 }
