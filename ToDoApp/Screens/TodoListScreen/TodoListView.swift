@@ -57,7 +57,7 @@ struct TodoListView: View {
                                     Button {
                                         viewModel.toggleTask(todoItem)
                                     } label: {
-                                        Image(systemName: todoItem.completed ? "xmark.circle": "checkmark.circle")
+                                        Image(systemName: todoItem.completed ? "xmark.circle" : "checkmark.circle")
                                     }
                                     .tint(todoItem.completed ? Resources.Colors.red : Resources.Colors.green)
                                 }

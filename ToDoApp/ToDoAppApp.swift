@@ -88,7 +88,7 @@ struct ToDoAppApp: App {
         DDLog.add(DDOSLogger.sharedInstance)
 
         let fileLogger: DDFileLogger = DDFileLogger()
-        fileLogger.rollingFrequency = TimeInterval(60*60*24 * 7)
+        fileLogger.rollingFrequency = TimeInterval(60 * 60 * 24 * 7)
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
         DDLog.add(fileLogger)
 

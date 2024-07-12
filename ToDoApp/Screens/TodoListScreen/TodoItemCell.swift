@@ -5,7 +5,7 @@ struct TodoItemCell: View {
     @ObservedObject var viewModel: TodoListViewModel
 
     private var checkCircle: some View {
-        Image(todoItem.completed ? "DoneTask": todoItem.priority == .high ? "ImportantTask" : "CheckTask")
+        Image(todoItem.completed ? "DoneTask" : todoItem.priority == .high ? "ImportantTask" : "CheckTask")
             .frame(width: 24, height: 24)
             .onTapGesture {
                 viewModel.toggleTask(todoItem)
@@ -26,7 +26,7 @@ struct TodoItemCell: View {
             .lineLimit(3)
             .multilineTextAlignment(.leading)
             .font(.system(size: 17))
-            .foregroundStyle(todoItem.completed ? Resources.Colors.Label.disable: Resources.Colors.Label.primary)
+            .foregroundStyle(todoItem.completed ? Resources.Colors.Label.disable : Resources.Colors.Label.primary)
             .strikethrough(todoItem.completed)
     }
 

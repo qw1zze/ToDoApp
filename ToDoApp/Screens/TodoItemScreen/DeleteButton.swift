@@ -10,7 +10,7 @@ struct DeleteButton: View {
             dismiss()
         } label: {
             Text(TodoItemViewConst.delete)
-                .foregroundStyle(viewModel.todoItem?.id != nil ? Resources.Colors.red: Resources.Colors.Label.disable)
+                .foregroundStyle(viewModel.todoItem?.id != nil ? Resources.Colors.red : Resources.Colors.Label.disable)
         }
         .frame(maxWidth: .infinity, minHeight: 20, idealHeight: 56, maxHeight: 56)
         .background(Resources.Colors.Back.secondary)
