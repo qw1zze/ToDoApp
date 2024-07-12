@@ -1,14 +1,15 @@
+import FileCacheUtil
 import Foundation
 
 final class CalendarViewModel: ObservableObject {
-    @Published var fileCache: FileCache
+    @Published var fileCache: FileCache<TodoItem>
     @Published var todoItems: [TodoItem]
     @Published var source: [CalendarTodoItem]
 
-    init(fileCache: FileCache) {
+    init(fileCache: FileCache<TodoItem>) {
         self.fileCache = fileCache
-        self.todoItems = fileCache.todoItems
-        self.source = CalendarViewModel.convertSource(fileCache.todoItems)
+        self.todoItems = fileCache.getItems()
+        self.source = CalendarViewModel.convertSource(fileCache.getItems())
     }
 
     func completeTask(_ todo: TodoItem) -> TodoItem {
@@ -21,7 +22,7 @@ final class CalendarViewModel: ObservableObject {
                                      changed: todo.changed,
                                      category: todo.category)
         fileCache.updateTodo(completedTodo)
-        self.todoItems = fileCache.todoItems
+        self.todoItems = fileCache.getItems()
         return completedTodo
     }
 
@@ -35,12 +36,12 @@ final class CalendarViewModel: ObservableObject {
                                      changed: todo.changed,
                                      category: todo.category)
         fileCache.updateTodo(uncompletedTodo)
-        self.todoItems = fileCache.todoItems
+        self.todoItems = fileCache.getItems()
         return uncompletedTodo
     }
 
     func updateItems() {
-        self.source = CalendarViewModel.convertSource(self.fileCache.todoItems)
+        self.source = CalendarViewModel.convertSource(self.fileCache.getItems())
     }
 
     static func convertSource(_ items: [TodoItem]) -> [CalendarTodoItem] {

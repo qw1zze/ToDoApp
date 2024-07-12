@@ -1,8 +1,9 @@
 import CocoaLumberjackSwift
+import FileCacheUtil
 import Foundation
 import SwiftUI
 
-struct TodoItem: Identifiable {
+struct TodoItem: FileCachable {
     let id: String
     let text: String
     let priority: Priority

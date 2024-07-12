@@ -1,4 +1,5 @@
 import CocoaLumberjackSwift
+import FileCacheUtil
 import SwiftUI
 
 @main
@@ -11,7 +12,7 @@ struct ToDoAppApp: App {
     var body: some Scene {
         WindowGroup { // Оставил для удобства проверки
             TodoListView(viewModel: TodoListViewModel(fileCache: {
-                let fileCache = FileCacheLocal()
+                let fileCache = FileCache<TodoItem>()
                 fileCache.addTodo(TodoItem(text: "Закончить смотреть лекцию",
                                            priority: .neutral,
                                            deadline: Date().addingTimeInterval(86400 * 2),

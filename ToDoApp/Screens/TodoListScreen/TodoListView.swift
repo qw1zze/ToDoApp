@@ -1,4 +1,5 @@
 import CocoaLumberjackSwift
+import FileCacheUtil
 import SwiftUI
 
 struct TodoListView: View {
@@ -116,7 +117,7 @@ struct TodoListView: View {
 }
 
 #Preview {
-    let file = FileCacheLocal()
+    let file = FileCache<TodoItem>()
     file.addTodo(TodoItem(text: "sadasddad", priority: .high, created: Date()))
     file.addTodo(TodoItem(text: "Ssssssss", priority: .neutral, deadline: Date(), created: Date()))
     return TodoListView(viewModel: TodoListViewModel(fileCache: file))

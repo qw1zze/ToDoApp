@@ -1,14 +1,15 @@
+import FileCacheUtil
 import SwiftUI
 
 final class TodoListViewModel: ObservableObject {
-    @Published var fileCache: FileCache
+    @Published var fileCache: FileCache<TodoItem>
     @Published var todoItems: [TodoItem]
     @Published var filterCompleted = true
     @Published var isShownTodo: Bool = false
 
-    init(fileCache: FileCache) {
+    init(fileCache: FileCache<TodoItem>) {
         self.fileCache = fileCache
-        self.todoItems = fileCache.todoItems
+        self.todoItems = fileCache.getItems()
     }
 
     var items: [TodoItem] {
@@ -38,11 +39,10 @@ final class TodoListViewModel: ObservableObject {
             return
         }
         fileCache.addTodo(todo)
-        todoItems = fileCache.todoItems
+        todoItems = fileCache.getItems()
     }
-
     func update() {
-        todoItems = fileCache.todoItems
+        todoItems = fileCache.getItems()
     }
 
     func update(oldValue: TodoItem?, newValue: TodoItem?) {
@@ -51,13 +51,13 @@ final class TodoListViewModel: ObservableObject {
         }
         if let newValue = newValue {
             fileCache.updateTodo(newValue)
-            todoItems = fileCache.todoItems
+            todoItems = fileCache.getItems()
         } else {
-            guard let existedIndex = fileCache.todoItems.firstIndex(where: { $0.id == oldValue.id}) else {
+            guard let existedIndex = fileCache.getItems().firstIndex(where: { $0.id == oldValue.id}) else {
                 return
             }
-            _ = fileCache.removeTodo(id: fileCache.todoItems[existedIndex].id)
-            todoItems = fileCache.todoItems
+            _ = fileCache.removeTodo(id: fileCache.getItems()[existedIndex].id)
+            todoItems = fileCache.getItems()
         }
 
     }
@@ -71,7 +71,7 @@ final class TodoListViewModel: ObservableObject {
                                      created: todo.created,
                                      changed: todo.changed)
         fileCache.updateTodo(completedTodo)
-        self.todoItems = fileCache.todoItems
+        self.todoItems = fileCache.getItems()
     }
 
     func uncompleteTask(_ todo: TodoItem) {
@@ -83,7 +83,7 @@ final class TodoListViewModel: ObservableObject {
                                      created: todo.created,
                                      changed: todo.changed)
         fileCache.updateTodo(completedTodo)
-        self.todoItems = fileCache.todoItems
+        self.todoItems = fileCache.getItems()
     }
 
     func toggleTask(_ todo: TodoItem) {
@@ -95,11 +95,11 @@ final class TodoListViewModel: ObservableObject {
                                      created: todo.created,
                                      changed: todo.changed)
         fileCache.updateTodo(completedTodo)
-        self.todoItems = fileCache.todoItems
+        self.todoItems = fileCache.getItems()
     }
 
     func deleteTodo(_ todo: TodoItem) {
         self.update(oldValue: todo, newValue: nil)
-        todoItems = fileCache.todoItems
+        todoItems = fileCache.getItems()
     }
 }
