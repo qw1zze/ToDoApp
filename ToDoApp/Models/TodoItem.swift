@@ -72,8 +72,8 @@ enum Category: Int {
 
 enum Priority: String {
     case low
-    case neutral
-    case high
+    case neutral = "basic"
+    case high = "important"
 }
 
 enum TodoCodingKeys: String, CaseIterable {

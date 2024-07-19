@@ -4,6 +4,10 @@ extension Date {
     func string() -> String {
         return ISO8601DateFormatter().string(from: self)
     }
+    
+    func getTimestamp() -> Int {
+        return Int(self.timeIntervalSince1970)
+    }
 
     static func fromString(string: String?) -> Date? {
         guard let string else {return nil}
