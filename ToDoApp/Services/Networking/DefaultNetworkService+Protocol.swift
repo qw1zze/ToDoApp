@@ -30,4 +30,32 @@ extension DefaultNetworkingService: NetworkingService {
                 completion(.failure(error))
             }
     }
+    
+    func getTask(by id: String, completion: @escaping (Result<TodoItemResponse, Error>) -> Void) async {
+        do {
+            let response: TodoItemResponse = try await sendRequest(
+                request: NetworkRequest(
+                    baseUrl: NetworkConstants.baseUrl,
+                    path: NetworkConstants.Paths.todoList + "/\(id)",
+                    headers: [NetworkConstants.Headers.authorization: NetworkConstants.token]
+                ))
+            completion(.success(response))
+        } catch {
+            completion(.failure(error))
+        }
+    }
+    
+    func deleteTask(by id: String, revision: Int, completion: @escaping (Result<TodoItemResponse, Error>) -> Void) async {
+            do {
+                let response: TodoItemResponse = try await sendRequest(request: NetworkRequest(
+                    baseUrl: NetworkConstants.baseUrl,
+                    path: NetworkConstants.Paths.todoList + "/\(id)",
+                    headers: [NetworkConstants.Headers.authorization: NetworkConstants.token,
+                              NetworkConstants.Headers.lastRevision: String(revision)],
+                    method: .delete))
+                completion(.success(response))
+            } catch {
+                completion(.failure(error))
+            }
+    }
 }
