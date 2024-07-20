@@ -105,7 +105,7 @@ struct TodoListView: View {
         }
         .background(Resources.Colors.Back.primary)
         .sheet(isPresented: $viewModel.isShownTodo, onDismiss: { selectedTodo = nil; viewModel.fetchTodoItems() }, content: {
-            TodoItemView(viewModel: TodoItemViewModel(todoItem: selectedTodo, fileCache: viewModel.fileCache))
+            TodoItemView(viewModel: TodoItemViewModel(todoItem: selectedTodo, fileCache: viewModel.fileCache, networkingService: viewModel.networkingService, revision: viewModel.revision))
         })
         .onAppear {
             DDLogInfo("OPENING TODOITEM LIST VIEW")

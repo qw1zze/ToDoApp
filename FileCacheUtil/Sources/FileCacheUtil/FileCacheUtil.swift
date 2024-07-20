@@ -28,14 +28,15 @@ public final class FileCache<ItemType: FileCachable> {
         return try JSONSerialization.data(withJSONObject: data)
     }
 
-    public func addTodo(_ item: ItemType) {
+    public func addTodo(_ item: ItemType) -> Bool{
         if let existedIndex = items.firstIndex(where: { $0.id == item.id}) {
             items[existedIndex] = item
             DDLogInfo("TODO UPDATING")
-            return
+            return false
         }
         items.append(item)
         DDLogInfo("TODO ADDING")
+        return true
     }
 
     public func removeTodo(id: String) -> ItemType? {

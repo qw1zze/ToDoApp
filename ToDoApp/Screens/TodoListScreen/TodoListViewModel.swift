@@ -10,7 +10,7 @@ final class TodoListViewModel: ObservableObject {
     @Published var filterCompleted = true
     @Published var isShownTodo: Bool = false
     
-    private var revision: Int = 0
+    public var revision: Int = 0
 
     init(fileCache: FileCache<TodoItem>, networkingService: NetworkingService) {
         self.fileCache = fileCache
@@ -30,21 +30,26 @@ final class TodoListViewModel: ObservableObject {
     
     func fetchTodoItems() {
         Task {
-            await networkingService.getList() { [weak self] result in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let response):
-                    DDLogInfo("GET TASKS LIST RESPONSE")
-                    DispatchQueue.main.sync {
-                        let items = response.list.map({ $0.toTodoItem() })
-                        self.fileCache.fetchItems(items: items)
-                        self.todoItems = items
-                        self.revision = response.revision ?? 0
+            if self.fileCache.getItems().isEmpty {
+                await networkingService.getList() { [weak self] result in
+                    guard let self = self else { return }
+                    
+                    switch result {
+                    case .success(let response):
+                        DDLogInfo("GET TASKS LIST RESPONSE")
+                        DispatchQueue.main.sync {
+                            let items = response.list.map({ $0.toTodoItem() })
+                            
+                            self.fileCache.fetchItems(items: items)
+                            self.todoItems = items
+                            self.revision = response.revision ?? 0
+                        }
+                    case .failure(let error):
+                        DDLogInfo("ERROR MAKING TASK LIST REQUEST")
                     }
-                case .failure(let error):
-                    DDLogInfo("ERROR MAKING TASK LIST REQUEST")
                 }
+            } else {
+                todoItems = fileCache.getItems()
             }
         }
     }
@@ -135,7 +140,7 @@ final class TodoListViewModel: ObservableObject {
     private func updateDirty() async {
         DDLogInfo("TRY SYNC DATA")
         
-        await networkingService.updateList(by: TodoListResponse(list: self.todoItems.map({ TodoItemCodable(from: $0) })), revision: revision) { [weak self] result in
+        await networkingService.updateList(by: TodoListResponse(list: fileCache.getItems().map({ TodoItemCodable(from: $0) })), revision: revision) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
