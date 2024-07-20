@@ -118,6 +118,6 @@ struct TodoItemView: View {
 
 #Preview {
     @State var show = true
-    let viewModel = TodoItemViewModel(todoItem: nil, fileCache: FileCache<TodoItem>(), networkingService: DefaultNetworkingService(), revision: 4)
+    let viewModel = TodoItemViewModel(todoItem: nil, fileCache: FileCache<TodoItem>(), networkingService: DefaultNetworkingService())
     return TodoItemView(viewModel: viewModel, delegate: nil)
 }

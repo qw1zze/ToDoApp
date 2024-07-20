@@ -14,9 +14,8 @@ final class TodoItemViewModel: ObservableObject {
 
     private var fileCache: FileCache<TodoItem>
     private var networkingService: NetworkingService
-    private var revision: Int
 
-    init(todoItem: TodoItem?, fileCache: FileCache<TodoItem>, networkingService: NetworkingService, revision: Int) {
+    init(todoItem: TodoItem?, fileCache: FileCache<TodoItem>, networkingService: NetworkingService) {
         self.todoItem = todoItem
         self.taskText = todoItem?.text ?? ""
         self.priority = todoItem?.priority ?? .neutral
@@ -26,7 +25,6 @@ final class TodoItemViewModel: ObservableObject {
         self.fileCache = fileCache
         self.category = todoItem?.category ?? .other
         self.networkingService = networkingService
-        self.revision = revision
         self.selectionCategory = self.category.getInt()
     }
 
@@ -47,11 +45,11 @@ final class TodoItemViewModel: ObservableObject {
                 DispatchQueue.main.sync {
                     let items = response.list.map({ $0.toTodoItem() })
                     self.fileCache.fetchItems(items: items)
-                    self.revision = response.revision ?? 0
+                    revision = response.revision ?? 0
                     
                     isDirty = false
                 }
-            case .failure(let error):
+            case .failure(_):
                 DDLogInfo("ERROR TRY SYNC DATA")
             }
         }
@@ -74,26 +72,26 @@ final class TodoItemViewModel: ObservableObject {
             }
             
             if fileCache.addTodo(todoItem) {
-                await networkingService.addTask(by: TodoItemResponse(element: TodoItemCodable(from: todoItem)), revision: self.revision) { [weak self] result in
-                    guard let self else {return}
+                await networkingService.addTask(by: TodoItemResponse(element: TodoItemCodable(from: todoItem)), revision: revision) { [weak self] result in
+                    guard self != nil else {return}
                     
                     switch result {
-                    case .success(let response):
+                    case .success(_):
                         DDLogInfo("GET ADD TASK RESPONSE")
-                    case .failure(let error):
+                    case .failure(_):
                         DDLogInfo("ERROR MAKING ADD DATA REQUEST")
                         
                         isDirty = true
                     }
                 }
             } else {
-                await networkingService.changeTask(by: TodoItemResponse(element: TodoItemCodable(from: todoItem)), revision: self.revision) { [weak self] result in
-                    guard let self else {return}
+                await networkingService.changeTask(by: TodoItemResponse(element: TodoItemCodable(from: todoItem)), revision: revision) { [weak self] result in
+                    guard self != nil else {return}
                     
                     switch result {
-                    case .success(let response):
+                    case .success(_):
                         DDLogInfo("GET UPDATE TASK RESPONSE")
-                    case .failure(let error):
+                    case .failure(_):
                         DDLogInfo("ERROR MAKING UPDATE DATA REQUEST")
                         
                         isDirty = true
@@ -115,7 +113,7 @@ final class TodoItemViewModel: ObservableObject {
             
             _ = fileCache.removeTodo(id: id)
             
-            await networkingService.deleteTask(by: id, revision: self.revision) { [weak self] result in
+            await networkingService.deleteTask(by: id, revision: revision) { [weak self] result in
                 guard let self else {return}
                 
                 switch result {

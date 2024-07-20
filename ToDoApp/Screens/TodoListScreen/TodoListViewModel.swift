@@ -9,8 +9,6 @@ final class TodoListViewModel: ObservableObject {
     @Published var todoItems: [TodoItem]
     @Published var filterCompleted = true
     @Published var isShownTodo: Bool = false
-    
-    public var revision: Int = 0
 
     init(fileCache: FileCache<TodoItem>, networkingService: NetworkingService) {
         self.fileCache = fileCache
@@ -42,9 +40,9 @@ final class TodoListViewModel: ObservableObject {
                             
                             self.fileCache.fetchItems(items: items)
                             self.todoItems = items
-                            self.revision = response.revision ?? 0
+                            revision = response.revision ?? 0
                         }
-                    case .failure(let error):
+                    case .failure(_):
                         DDLogInfo("ERROR MAKING TASK LIST REQUEST")
                     }
                 }
@@ -93,9 +91,9 @@ final class TodoListViewModel: ObservableObject {
                                 }
                             }
                             
-                            self.revision = response.revision ?? 0
+                            revision = response.revision ?? 0
                         }
-                    case .failure(let error):
+                    case .failure(_):
                         DDLogInfo("ERROR MAKING UPDATE TASK REQUESTS")
                         isDirty = true
                     }
@@ -126,9 +124,9 @@ final class TodoListViewModel: ObservableObject {
                                 }
                             }
                             
-                            self.revision = response.revision ?? 0
+                            revision = response.revision ?? 0
                         }
-                    case .failure(let error):
+                    case .failure(_):
                         DDLogInfo("ERROR MAKING DELETE TASK REQUEST")
                         isDirty = true
                     }
@@ -151,11 +149,11 @@ final class TodoListViewModel: ObservableObject {
                     let items = response.list.map({ $0.toTodoItem() })
                     self.fileCache.fetchItems(items: items)
                     self.todoItems = items
-                    self.revision = response.revision ?? 0
+                    revision = response.revision ?? 0
                     
                     isDirty = false
                 }
-            case .failure(let error):
+            case .failure(_):
                 DDLogInfo("ERROR TRY SYNC DATA")
             }
         }
