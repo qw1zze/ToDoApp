@@ -25,8 +25,6 @@ extension TodoItem {
         self.created = created
         self.changed = changed
         self.category = category != nil ? Category(rawValue: category!) : nil
-
-        DDLogInfo("CREATE TODOITEM")
     }
 
     private static func convertToData(json: Any) -> Data? {

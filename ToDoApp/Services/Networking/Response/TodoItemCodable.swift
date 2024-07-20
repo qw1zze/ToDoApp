@@ -48,4 +48,14 @@ struct TodoItemCodable: Codable {
         changedAt = (try? container.decode(Int.self, forKey: .changedAt)) ?? 0
         lastUpdatedBy = ""
     }
+    
+    public func toTodoItem() -> TodoItem {
+        return TodoItem(id: self.id,
+                        text: self.text,
+                        priority: Priority(rawValue: self.importance) ?? .neutral,
+                        deadline: Date.fromTimeStamp(from: self.deadline),
+                        completed: self.done,
+                        created: Date.fromTimeStamp(from: self.createdAt) ?? Date(),
+                        changed: Date.fromTimeStamp(from: self.changedAt))
+    }
 }

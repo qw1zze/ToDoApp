@@ -16,6 +16,12 @@ public final class FileCache<ItemType: FileCachable> {
     public func getItems() -> [ItemType] {
         return items
     }
+    
+    public func fetchItems(items: [ItemType]) {
+        self.items = items
+        
+        DDLogInfo("FETCH FILECACHE")
+    }
 
     private func convertToData() throws -> Data {
         let data = items.map { $0.json }

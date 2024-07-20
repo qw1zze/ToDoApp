@@ -1,5 +1,7 @@
 import Foundation
 
+var isDirty = false
+
 protocol NetworkingService {
     func getList(completion: @escaping (Result<TodoListResponse, Error>) -> Void) async 
     

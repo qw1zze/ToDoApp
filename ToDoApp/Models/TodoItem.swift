@@ -30,8 +30,6 @@ struct TodoItem: FileCachable {
         self.created = created
         self.changed = changed
         self.category = category ?? .other
-
-        DDLogInfo("CREATE TODOITEM")
     }
 }
 
