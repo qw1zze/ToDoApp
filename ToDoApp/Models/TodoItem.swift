@@ -30,8 +30,6 @@ struct TodoItem: FileCachable {
         self.created = created
         self.changed = changed
         self.category = category ?? .other
-
-        DDLogInfo("CREATE TODOITEM")
     }
 }
 
@@ -72,8 +70,8 @@ enum Category: Int {
 
 enum Priority: String {
     case low
-    case neutral
-    case high
+    case neutral = "basic"
+    case high = "important"
 }
 
 enum TodoCodingKeys: String, CaseIterable {

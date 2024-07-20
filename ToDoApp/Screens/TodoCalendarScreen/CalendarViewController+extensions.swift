@@ -7,7 +7,8 @@ extension CalendarViewController {
     func addNewTodo() {
         let swiftUIHostingController = UIHostingController(
             rootView: TodoItemView(viewModel: TodoItemViewModel(todoItem: nil,
-                                                                fileCache: viewModel.fileCache),
+                                                                fileCache: viewModel.fileCache,
+                                                                networkingService: viewModel.networkingService),
                                    delegate: self))
         present(swiftUIHostingController, animated: true)
     }

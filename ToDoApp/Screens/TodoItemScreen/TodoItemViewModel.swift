@@ -1,5 +1,6 @@
 import FileCacheUtil
 import SwiftUI
+import CocoaLumberjackSwift
 
 final class TodoItemViewModel: ObservableObject {
     @Published var todoItem: TodoItem?
@@ -12,8 +13,9 @@ final class TodoItemViewModel: ObservableObject {
     @Published var selectionCategory: Int = 0
 
     private var fileCache: FileCache<TodoItem>
+    private var networkingService: NetworkingService
 
-    init(todoItem: TodoItem?, fileCache: FileCache<TodoItem>) {
+    init(todoItem: TodoItem?, fileCache: FileCache<TodoItem>, networkingService: NetworkingService) {
         self.todoItem = todoItem
         self.taskText = todoItem?.text ?? ""
         self.priority = todoItem?.priority ?? .neutral
@@ -22,31 +24,108 @@ final class TodoItemViewModel: ObservableObject {
         self.isShowDatePicker = false
         self.fileCache = fileCache
         self.category = todoItem?.category ?? .other
+        self.networkingService = networkingService
         self.selectionCategory = self.category.getInt()
     }
 
     var hasDatePicker: Bool {
         return hasDeadline && isShowDatePicker
     }
+    
+    private func updateDirty() async {
+        DDLogInfo("TRY SYNC DATA")
+        
+        await networkingService.updateList(by: TodoListResponse(list: fileCache.getItems().map({ TodoItemCodable(from: $0) })), revision: revision) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let response):
+                DDLogInfo("SYNC DATA WITH SERVER")
+                
+                DispatchQueue.main.sync {
+                    let items = response.list.map({ $0.toTodoItem() })
+                    self.fileCache.fetchItems(items: items)
+                    revision = response.revision ?? 0
+                    
+                    isDirty = false
+                }
+            case .failure(_):
+                DDLogInfo("ERROR TRY SYNC DATA")
+            }
+        }
+    }
 
     func saveTodoItem() {
-        let todoItem = TodoItem(id: todoItem?.id ?? UUID().uuidString,
-                                text: taskText,
-                                priority: priority,
-                                deadline: hasDeadline ? deadline : nil,
-                                completed: todoItem?.completed ?? false,
-                                created: todoItem?.created ?? Date(),
-                                changed: Date(),
-                                category: category
-        )
-        fileCache.addTodo(todoItem)
+        Task {
+            let todoItem = TodoItem(id: todoItem?.id ?? UUID().uuidString,
+                                    text: taskText,
+                                    priority: priority,
+                                    deadline: hasDeadline ? deadline : nil,
+                                    completed: todoItem?.completed ?? false,
+                                    created: todoItem?.created ?? Date(),
+                                    changed: Date(),
+                                    category: category
+            )
+            
+            if isDirty {
+                await updateDirty()
+            }
+            
+            if fileCache.addTodo(todoItem) {
+                await networkingService.addTask(by: TodoItemResponse(element: TodoItemCodable(from: todoItem)), revision: revision) { [weak self] result in
+                    guard self != nil else {return}
+                    
+                    switch result {
+                    case .success(_):
+                        DDLogInfo("GET ADD TASK RESPONSE")
+                    case .failure(_):
+                        DDLogInfo("ERROR MAKING ADD DATA REQUEST")
+                        
+                        isDirty = true
+                    }
+                }
+            } else {
+                await networkingService.changeTask(by: TodoItemResponse(element: TodoItemCodable(from: todoItem)), revision: revision) { [weak self] result in
+                    guard self != nil else {return}
+                    
+                    switch result {
+                    case .success(_):
+                        DDLogInfo("GET UPDATE TASK RESPONSE")
+                    case .failure(_):
+                        DDLogInfo("ERROR MAKING UPDATE DATA REQUEST")
+                        
+                        isDirty = true
+                    }
+                }
+            }
+        }
     }
 
     func deleteTodoItem() {
-        guard let id = todoItem?.id else {
-            return
+        Task {
+            guard let id = todoItem?.id else {
+                return
+            }
+            
+            if isDirty {
+                await updateDirty()
+            }
+            
+            _ = fileCache.removeTodo(id: id)
+            
+            await networkingService.deleteTask(by: id, revision: revision) { [weak self] result in
+                guard let self else {return}
+                
+                switch result {
+                case .success(let response):
+                    DDLogInfo("GET DELETE TASK RESPONSE")
+                case .failure(let error):
+                    DDLogInfo("ERROR MAKING DELETE DATA REQUEST")
+                    
+                    isDirty = true
+                }
+            }
         }
-        _ = fileCache.removeTodo(id: id)
     }
 
     func hideDatePicker() {

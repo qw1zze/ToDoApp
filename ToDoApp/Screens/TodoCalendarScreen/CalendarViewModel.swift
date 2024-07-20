@@ -5,11 +5,14 @@ final class CalendarViewModel: ObservableObject {
     @Published var fileCache: FileCache<TodoItem>
     @Published var todoItems: [TodoItem]
     @Published var source: [CalendarTodoItem]
+    
+    public var networkingService: NetworkingService
 
-    init(fileCache: FileCache<TodoItem>) {
+    init(fileCache: FileCache<TodoItem>, networkingService: NetworkingService) {
         self.fileCache = fileCache
         self.todoItems = fileCache.getItems()
         self.source = CalendarViewModel.convertSource(fileCache.getItems())
+        self.networkingService = networkingService
     }
 
     func completeTask(_ todo: TodoItem) -> TodoItem {
@@ -23,6 +26,7 @@ final class CalendarViewModel: ObservableObject {
                                      category: todo.category)
         fileCache.updateTodo(completedTodo)
         self.todoItems = fileCache.getItems()
+        
         return completedTodo
     }
 

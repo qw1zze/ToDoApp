@@ -87,15 +87,12 @@ struct TodoListView: View {
                 .overlay(alignment: .bottom) {
                     AddNewTodoButton(action: viewModel.showTodo)
                 }
-                .onAppear {
-                    viewModel.update()
-                }
             }
             .background(Resources.Colors.Back.primary)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        TodoCalendarWrapper(viewModel: CalendarViewModel(fileCache: viewModel.fileCache))
+                        TodoCalendarWrapper(viewModel: CalendarViewModel(fileCache: viewModel.fileCache, networkingService: viewModel.networkingService))
                             .navigationTitle(TodoListViewConst.myTasks)
                             .toolbarRole(.editor)
                             .navigationBarTitleDisplayMode(.inline)
@@ -107,18 +104,17 @@ struct TodoListView: View {
             }
         }
         .background(Resources.Colors.Back.primary)
-        .sheet(isPresented: $viewModel.isShownTodo, onDismiss: { selectedTodo = nil; viewModel.update() }, content: {
-            TodoItemView(viewModel: TodoItemViewModel(todoItem: selectedTodo, fileCache: viewModel.fileCache))
+        .sheet(isPresented: $viewModel.isShownTodo, onDismiss: { selectedTodo = nil; viewModel.fetchTodoItems() }, content: {
+            TodoItemView(viewModel: TodoItemViewModel(todoItem: selectedTodo, fileCache: viewModel.fileCache, networkingService: viewModel.networkingService))
         })
         .onAppear {
             DDLogInfo("OPENING TODOITEM LIST VIEW")
+            viewModel.fetchTodoItems()
         }
     }
 }
 
 #Preview {
     let file = FileCache<TodoItem>()
-    file.addTodo(TodoItem(text: "sadasddad", priority: .high, created: Date()))
-    file.addTodo(TodoItem(text: "Ssssssss", priority: .neutral, deadline: Date(), created: Date()))
-    return TodoListView(viewModel: TodoListViewModel(fileCache: file))
+    return TodoListView(viewModel: TodoListViewModel(fileCache: file, networkingService: DefaultNetworkingService()))
 }
