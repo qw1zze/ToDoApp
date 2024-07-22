@@ -75,10 +75,12 @@ final class TodoListViewModel: ObservableObject {
                     await updateDirty()
                 }
                 
+                fileCache.updateTodo(newValue)
+                
+                
                 await networkingService.changeTask(by: TodoItemResponse(element: TodoItemCodable(from: newValue)), revision: revision) { [weak self] result in
                     guard let self = self else { return }
                     
-                    fileCache.updateTodo(newValue)
                     switch result {
                     case .success(let response):
                         DDLogInfo("GET UPDATE TASK RESPONSE")
@@ -96,6 +98,13 @@ final class TodoListViewModel: ObservableObject {
                     case .failure(_):
                         DDLogInfo("ERROR MAKING UPDATE TASK REQUESTS")
                         isDirty = true
+                        
+                        for i in 0..<fileCache.getItems().count {
+                            if fileCache.getItems()[i].id == newValue.id {
+                                self.todoItems[i] = newValue
+                                break
+                            }
+                        }
                     }
                 }
             } else {
@@ -107,10 +116,10 @@ final class TodoListViewModel: ObservableObject {
                     await updateDirty()
                 }
                 
+                _ = fileCache.removeTodo(id: todoItems[existedIndex].id)
+                
                 await networkingService.deleteTask(by: todoItems[existedIndex].id, revision: revision) {[weak self] result in
                     guard let self = self else { return }
-                    
-                    _ = fileCache.removeTodo(id: todoItems[existedIndex].id)
                     
                     switch result {
                     case .success(let response):

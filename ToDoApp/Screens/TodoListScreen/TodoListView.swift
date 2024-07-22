@@ -87,6 +87,9 @@ struct TodoListView: View {
                 .overlay(alignment: .bottom) {
                     AddNewTodoButton(action: viewModel.showTodo)
                 }
+                .onAppear {
+                    viewModel.fetchTodoItems()
+                }
             }
             .background(Resources.Colors.Back.primary)
             .toolbar {
@@ -94,7 +97,6 @@ struct TodoListView: View {
                     NavigationLink {
                         TodoCalendarWrapper(viewModel: CalendarViewModel(fileCache: viewModel.fileCache, networkingService: viewModel.networkingService))
                             .navigationTitle(TodoListViewConst.myTasks)
-                            .toolbarRole(.editor)
                             .navigationBarTitleDisplayMode(.inline)
                             .background(Resources.Colors.Back.primary.edgesIgnoringSafeArea(.bottom))
                     } label: {
