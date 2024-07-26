@@ -1,5 +1,4 @@
 import CocoaLumberjackSwift
-import FileCacheUtil
 import SwiftUI
 
 @main
@@ -11,7 +10,7 @@ struct ToDoAppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TodoListView(viewModel: TodoListViewModel(fileCache: FileCache<TodoItem>(), networkingService: DefaultNetworkingService()))
+            TodoListView(viewModel: TodoListViewModel(fileCache: FileCache(), networkingService: DefaultNetworkingService()))
         }
     }
 

@@ -1,4 +1,3 @@
-import FileCacheUtil
 import SwiftUI
 import CocoaLumberjackSwift
 
@@ -12,10 +11,10 @@ final class TodoItemViewModel: ObservableObject {
     @Published var category: Category
     @Published var selectionCategory: Int = 0
 
-    private var fileCache: FileCache<TodoItem>
+    private var fileCache: FileCache
     private var networkingService: NetworkingService
 
-    init(todoItem: TodoItem?, fileCache: FileCache<TodoItem>, networkingService: NetworkingService) {
+    init(todoItem: TodoItem?, fileCache: FileCache, networkingService: NetworkingService) {
         self.todoItem = todoItem
         self.taskText = todoItem?.text ?? ""
         self.priority = todoItem?.priority ?? .neutral
