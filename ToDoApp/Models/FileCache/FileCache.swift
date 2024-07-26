@@ -1,5 +1,6 @@
 import CocoaLumberjackSwift
 import Foundation
+import SwiftData
 
 enum JSONError: Error {
     case notValidTodoItem
@@ -8,10 +9,19 @@ enum JSONError: Error {
 
 final class FileCache {
     private(set) var items = [TodoItem]()
-
+    
     let logger = DDOSLogger.sharedInstance
-
-    public init() {}
+    
+    internal let modelContainer: ModelContainer?
+    
+    public init() {
+        do {
+            modelContainer = try ModelContainer(for: TodoItemData.self)
+        } catch {
+            modelContainer = nil
+            DDLogInfo("ERROR CREATE ModelContainer")
+        }
+    }
 
     func getItems() -> [TodoItem] {
         return items
