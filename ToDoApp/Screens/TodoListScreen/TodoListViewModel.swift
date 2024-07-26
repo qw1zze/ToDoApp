@@ -27,27 +27,24 @@ final class TodoListViewModel: ObservableObject {
     }
     
     func fetchTodoItems() {
-        Task {
-            if self.fileCache.getItems().isEmpty {
-                await networkingService.getList() { [weak self] result in
-                    guard let self = self else { return }
+        DDLogInfo("Request: getItems")
+        
+        Task { @MainActor in
+            do {
+                if self.fileCache.getItems().isEmpty {
+                    let response = try await networkingService.getList()
+                    DDLogInfo("Response: \(response)")
                     
-                    switch result {
-                    case .success(let response):
-                        DDLogInfo("GET TASKS LIST RESPONSE")
-                        DispatchQueue.main.sync {
-                            let items = response.list.map({ $0.toTodoItem() })
-                            
-                            self.fileCache.fetchItems(items: items)
-                            self.todoItems = items
-                            revision = response.revision ?? 0
-                        }
-                    case .failure(_):
-                        DDLogInfo("ERROR MAKING TASK LIST REQUEST")
-                    }
+                    let items = response.list.map({ $0.toTodoItem() })
+                    self.fileCache.fetchItems(items: items)
+                    self.todoItems = items
+                    revision = response.revision ?? 0
+                    
+                } else {
+                    todoItems = fileCache.getItems()
                 }
-            } else {
-                todoItems = fileCache.getItems()
+            } catch {
+                DDLogInfo("ERROR getItems")
             }
         }
     }
@@ -65,7 +62,7 @@ final class TodoListViewModel: ObservableObject {
     }
 
     func update(oldValue: TodoItem?, newValue: TodoItem?) {
-        Task {
+        Task { @MainActor in
             guard let oldValue = oldValue else {
                 return
             }
@@ -77,36 +74,31 @@ final class TodoListViewModel: ObservableObject {
                 
                 fileCache.updateTodo(newValue)
                 
-                
-                await networkingService.changeTask(by: TodoItemResponse(element: TodoItemCodable(from: newValue)), revision: revision) { [weak self] result in
-                    guard let self = self else { return }
+                do {
+                    let response = try await networkingService.changeTask(by: TodoItemResponse(element: TodoItemCodable(from: newValue)), revision: revision)
+                    DDLogInfo("Response: \(response)")
                     
-                    switch result {
-                    case .success(let response):
-                        DDLogInfo("GET UPDATE TASK RESPONSE")
-                        
-                        DispatchQueue.main.sync {
-                            for i in 0..<self.todoItems.count {
-                                if self.todoItems[i].id == response.element.id {
-                                    self.todoItems[i] = response.element.toTodoItem()
-                                    break
-                                }
-                            }
-                            
-                            revision = response.revision ?? 0
-                        }
-                    case .failure(_):
-                        DDLogInfo("ERROR MAKING UPDATE TASK REQUESTS")
-                        isDirty = true
-                        
-                        for i in 0..<fileCache.getItems().count {
-                            if fileCache.getItems()[i].id == newValue.id {
-                                self.todoItems[i] = newValue
-                                break
-                            }
+                    for i in 0..<self.todoItems.count {
+                        if self.todoItems[i].id == response.element.id {
+                            self.todoItems[i] = response.element.toTodoItem()
+                            break
                         }
                     }
+                    
+                    revision = response.revision ?? 0
+                } catch {
+                    DDLogInfo("ERROR changeTask")
+                    isDirty = true
+                    
+                    for i in 0..<fileCache.getItems().count {
+                        if fileCache.getItems()[i].id == newValue.id {
+                            self.todoItems[i] = newValue
+                            break
+                        }
+                    }
+
                 }
+                
             } else {
                 guard let existedIndex = todoItems.firstIndex(where: { $0.id == oldValue.id}) else {
                     return
@@ -118,27 +110,21 @@ final class TodoListViewModel: ObservableObject {
                 
                 _ = fileCache.removeTodo(id: todoItems[existedIndex].id)
                 
-                await networkingService.deleteTask(by: todoItems[existedIndex].id, revision: revision) {[weak self] result in
-                    guard let self = self else { return }
+                do {
+                    let response = try await networkingService.deleteTask(by: todoItems[existedIndex].id, revision: revision)
+                    DDLogInfo("Response: \(response)")
                     
-                    switch result {
-                    case .success(let response):
-                        DDLogInfo("GET DELETE TASK RESPONSE")
-                        
-                        DispatchQueue.main.sync {
-                            for i in 0..<self.todoItems.count {
-                                if self.todoItems[i].id == response.element.id {
-                                    self.todoItems.remove(at: i)
-                                    break
-                                }
-                            }
-                            
-                            revision = response.revision ?? 0
+                    for i in 0..<self.todoItems.count {
+                        if self.todoItems[i].id == response.element.id {
+                            self.todoItems.remove(at: i)
+                            break
                         }
-                    case .failure(_):
-                        DDLogInfo("ERROR MAKING DELETE TASK REQUEST")
-                        isDirty = true
                     }
+                    
+                    revision = response.revision ?? 0
+                } catch {
+                    DDLogInfo("ERROR deletetask")
+                    isDirty = true
                 }
             }
         }
@@ -147,24 +133,19 @@ final class TodoListViewModel: ObservableObject {
     private func updateDirty() async {
         DDLogInfo("TRY SYNC DATA")
         
-        await networkingService.updateList(by: TodoListResponse(list: fileCache.getItems().map({ TodoItemCodable(from: $0) })), revision: revision) { [weak self] result in
-            guard let self = self else { return }
+        do {
+            let response = try await networkingService.updateList(by: TodoListResponse(list: fileCache.getItems().map({ TodoItemCodable(from: $0) })), revision: revision)
             
-            switch result {
-            case .success(let response):
-                DDLogInfo("SYNC DATA WITH SERVER")
+            DDLogInfo("SYNCED DATA WITH SERVER")
+            
+            let items = response.list.map({ $0.toTodoItem() })
+            self.fileCache.fetchItems(items: items)
+            self.todoItems = items
+            revision = response.revision ?? 0
                 
-                DispatchQueue.main.sync {
-                    let items = response.list.map({ $0.toTodoItem() })
-                    self.fileCache.fetchItems(items: items)
-                    self.todoItems = items
-                    revision = response.revision ?? 0
-                    
-                    isDirty = false
-                }
-            case .failure(_):
-                DDLogInfo("ERROR TRY SYNC DATA")
-            }
+            isDirty = false
+        } catch {
+            DDLogInfo("ERROR updateList")
         }
     }
 

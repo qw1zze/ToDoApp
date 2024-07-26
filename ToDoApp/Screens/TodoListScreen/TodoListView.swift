@@ -110,7 +110,7 @@ struct TodoListView: View {
             TodoItemView(viewModel: TodoItemViewModel(todoItem: selectedTodo, fileCache: viewModel.fileCache, networkingService: viewModel.networkingService))
         })
         .onAppear {
-            DDLogInfo("OPENING TODOITEM LIST VIEW")
+            DDLogInfo("OPENED TODOITEM LIST VIEW")
             viewModel.fetchTodoItems()
         }
     }
