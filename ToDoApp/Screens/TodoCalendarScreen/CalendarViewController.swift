@@ -53,7 +53,7 @@ class CalendarViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        DDLogInfo("OPENING TODOITEM CALENDAR VIEW")
+        DDLogInfo("OPENED TODOITEM CALENDAR VIEW")
     }
 
     func setup() {

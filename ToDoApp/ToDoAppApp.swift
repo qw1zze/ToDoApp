@@ -6,7 +6,7 @@ import SwiftUI
 struct ToDoAppApp: App {
     init() {
         setupLog()
-        DDLogInfo("START APP")
+        DDLogInfo("STARTED APP")
     }
 
     var body: some Scene {

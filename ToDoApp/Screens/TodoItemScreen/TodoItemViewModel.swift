@@ -35,23 +35,17 @@ final class TodoItemViewModel: ObservableObject {
     private func updateDirty() async {
         DDLogInfo("TRY SYNC DATA")
         
-        await networkingService.updateList(by: TodoListResponse(list: fileCache.getItems().map({ TodoItemCodable(from: $0) })), revision: revision) { [weak self] result in
-            guard let self = self else { return }
+        do {
+            let response = try await networkingService.updateList(by: TodoListResponse(list: fileCache.getItems().map({ TodoItemCodable(from: $0) })), revision: revision)
+            DDLogInfo("SYNCED DATA WITH SERVER")
             
-            switch result {
-            case .success(let response):
-                DDLogInfo("SYNC DATA WITH SERVER")
+            let items = response.list.map({ $0.toTodoItem() })
+            self.fileCache.fetchItems(items: items)
+            revision = response.revision ?? 0
                 
-                DispatchQueue.main.sync {
-                    let items = response.list.map({ $0.toTodoItem() })
-                    self.fileCache.fetchItems(items: items)
-                    revision = response.revision ?? 0
-                    
-                    isDirty = false
-                }
-            case .failure(_):
-                DDLogInfo("ERROR TRY SYNC DATA")
-            }
+            isDirty = false
+        } catch {
+            DDLogInfo("ERROR updateList")
         }
     }
 
@@ -72,30 +66,22 @@ final class TodoItemViewModel: ObservableObject {
             }
             
             if fileCache.addTodo(todoItem) {
-                await networkingService.addTask(by: TodoItemResponse(element: TodoItemCodable(from: todoItem)), revision: revision) { [weak self] result in
-                    guard self != nil else {return}
+                do {
+                    var _ = try await networkingService.addTask(by: TodoItemResponse(element: TodoItemCodable(from: todoItem)), revision: revision)
+                    DDLogInfo("ADDED TASK")
+                } catch {
+                    DDLogInfo("ERROR addTask")
                     
-                    switch result {
-                    case .success(_):
-                        DDLogInfo("GET ADD TASK RESPONSE")
-                    case .failure(_):
-                        DDLogInfo("ERROR MAKING ADD DATA REQUEST")
-                        
-                        isDirty = true
-                    }
+                    isDirty = true
                 }
             } else {
-                await networkingService.changeTask(by: TodoItemResponse(element: TodoItemCodable(from: todoItem)), revision: revision) { [weak self] result in
-                    guard self != nil else {return}
+                do {
+                    _ = try await networkingService.changeTask(by: TodoItemResponse(element: TodoItemCodable(from: todoItem)), revision: revision)
+                    DDLogInfo("UPDATED TASK")
                     
-                    switch result {
-                    case .success(_):
-                        DDLogInfo("GET UPDATE TASK RESPONSE")
-                    case .failure(_):
-                        DDLogInfo("ERROR MAKING UPDATE DATA REQUEST")
-                        
-                        isDirty = true
-                    }
+                } catch {
+                    DDLogInfo("ERROR changeTask")
+                    isDirty = true
                 }
             }
         }
@@ -113,17 +99,12 @@ final class TodoItemViewModel: ObservableObject {
             
             _ = fileCache.removeTodo(id: id)
             
-            await networkingService.deleteTask(by: id, revision: revision) { [weak self] result in
-                guard let self else {return}
-                
-                switch result {
-                case .success(let response):
-                    DDLogInfo("GET DELETE TASK RESPONSE")
-                case .failure(let error):
-                    DDLogInfo("ERROR MAKING DELETE DATA REQUEST")
-                    
-                    isDirty = true
-                }
+            do {
+                _ = try await networkingService.deleteTask(by: id, revision: revision)
+                DDLogInfo("DELETED TASK")
+            } catch {
+                DDLogInfo("ERROR deleteTask")
+                isDirty = true
             }
         }
     }

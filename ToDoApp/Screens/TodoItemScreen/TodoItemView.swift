@@ -110,7 +110,7 @@ struct TodoItemView: View {
                 }
             })
             .onAppear {
-                DDLogInfo("OPENING TODOITEM VIEW")
+                DDLogInfo("OPENED TODOITEM VIEW")
             }
         }
     }
