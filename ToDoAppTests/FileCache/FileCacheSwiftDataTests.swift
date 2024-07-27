@@ -120,7 +120,6 @@ final class FileCacheSwiftDataTests: XCTestCase {
         var todo = TodoItem(text: "test", priority: .high, created: Date.now)
         await fileCache.insert(todo)
         
-        
         var changedTodo = TodoItem(id: todo.id,
                                    text: "new",
                                    priority: .low,
@@ -162,5 +161,33 @@ final class FileCacheSwiftDataTests: XCTestCase {
         await fileCache.update(changedTodo)
         var items = await fileCache.fetch()
         XCTAssertEqual(items.count, 0)
+    }
+    
+    func testFetchWithSortAndFilter() async {
+        var fileCache = FileCache()
+        fileCache.modelContainer?.deleteAllData()
+        fileCache = FileCache()
+        
+        XCTAssertNotNil(fileCache.modelContainer)
+        
+        var time = Date.now
+        var todo1 = TodoItem(text: "test1", priority: .high, completed: true ,created: time)
+        var todo2 = TodoItem(text: "test2", priority: .high, deadline: time.addingTimeInterval(200),created: time.addingTimeInterval(500))
+        var todo3 = TodoItem(text: "test3", priority: .high, deadline: time, completed: true, created: time.addingTimeInterval(200))
+        var todo4 = TodoItem(text: "test4", priority: .high, deadline: time.addingTimeInterval(150) , created: time.addingTimeInterval(100))
+        
+        await fileCache.insert(todo1)
+        await fileCache.insert(todo2)
+        await fileCache.insert(todo3)
+        await fileCache.insert(todo4)
+        
+        var items = await fileCache.fetch(sort: .ascending, filter: .completed(true))
+        XCTAssertEqual(items.count, 2)
+        XCTAssertTrue(items[0].created < items[1].created)
+        
+        items = await fileCache.fetch(sort: .descending, filter: .deadline(time.addingTimeInterval(200)))
+        XCTAssertEqual(items.count, 3)
+        XCTAssertTrue(items[0].created > items[1].created)
+        XCTAssertTrue(items[1].created > items[2].created)
     }
 }
