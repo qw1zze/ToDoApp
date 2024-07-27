@@ -1,16 +1,15 @@
-import FileCacheUtil
 import SwiftUI
 import CocoaLumberjackSwift
 
 final class TodoListViewModel: ObservableObject {
-    @Published var fileCache: FileCache<TodoItem>
+    @Published var fileCache: FileCache
     @Published var networkingService: NetworkingService
     
     @Published var todoItems: [TodoItem]
     @Published var filterCompleted = true
     @Published var isShownTodo: Bool = false
 
-    init(fileCache: FileCache<TodoItem>, networkingService: NetworkingService) {
+    init(fileCache: FileCache, networkingService: NetworkingService) {
         self.fileCache = fileCache
         self.networkingService = networkingService
         self.todoItems = []

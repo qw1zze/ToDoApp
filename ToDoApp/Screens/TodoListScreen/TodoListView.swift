@@ -1,5 +1,4 @@
 import CocoaLumberjackSwift
-import FileCacheUtil
 import SwiftUI
 
 struct TodoListView: View {
@@ -117,6 +116,6 @@ struct TodoListView: View {
 }
 
 #Preview {
-    let file = FileCache<TodoItem>()
+    let file = FileCache()
     return TodoListView(viewModel: TodoListViewModel(fileCache: file, networkingService: DefaultNetworkingService()))
 }

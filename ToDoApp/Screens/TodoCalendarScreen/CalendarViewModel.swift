@@ -1,14 +1,13 @@
-import FileCacheUtil
 import Foundation
 
 final class CalendarViewModel: ObservableObject {
-    @Published var fileCache: FileCache<TodoItem>
+    @Published var fileCache: FileCache
     @Published var todoItems: [TodoItem]
     @Published var source: [CalendarTodoItem]
     
     public var networkingService: NetworkingService
 
-    init(fileCache: FileCache<TodoItem>, networkingService: NetworkingService) {
+    init(fileCache: FileCache, networkingService: NetworkingService) {
         self.fileCache = fileCache
         self.todoItems = fileCache.getItems()
         self.source = CalendarViewModel.convertSource(fileCache.getItems())

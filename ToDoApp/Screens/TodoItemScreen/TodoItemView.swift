@@ -1,5 +1,4 @@
 import CocoaLumberjackSwift
-import FileCacheUtil
 import SwiftUI
 
 protocol UpdateListDelegate: AnyObject {
@@ -118,6 +117,6 @@ struct TodoItemView: View {
 
 #Preview {
     @State var show = true
-    let viewModel = TodoItemViewModel(todoItem: nil, fileCache: FileCache<TodoItem>(), networkingService: DefaultNetworkingService())
+    let viewModel = TodoItemViewModel(todoItem: nil, fileCache: FileCache(), networkingService: DefaultNetworkingService())
     return TodoItemView(viewModel: viewModel, delegate: nil)
 }
